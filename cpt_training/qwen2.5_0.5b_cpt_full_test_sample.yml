@@ -29,7 +29,7 @@ load_in_4bit: false
 # Replace the `path:` below with your HF dataset repo id(s). List one entry
 # per language/dataset — Axolotl concatenates and shuffles them together.
 datasets:
-  - path: adityabanerjee13/indic-cpt-mini
+  - path: adityabanerjee13/hi-cpt-test-sample   # Hindi-only smoke-test sample (25k lines)
     type: completion
     field: text
     split: train

@@ -1,0 +1,96 @@
+# ==============================================================================
+# Axolotl config — full-parameter Continued Pre-Training (CPT) of Qwen2.5-0.5B
+# on Indic-language raw text, single GPU.
+#
+# Usage:
+#   pip install "axolotl[flash-attn]"
+#   axolotl train qwen2.5_0.5b_cpt_full.yml
+#   (or: python train.py   — see train.py in this same folder)
+#
+# Edit the `datasets:` section below to point at your HF dataset repo(s)
+# before running.
+# ==============================================================================
+
+base_model: Qwen/Qwen2.5-0.5B
+model_type: AutoModelForCausalLM
+tokenizer_type: AutoTokenizer
+trust_remote_code: false
+
+# --- Full-parameter fine-tuning: no LoRA/QLoRA adapter, no quantization ---
+adapter:
+load_in_8bit: false
+load_in_4bit: false
+
+# --- Data ---------------------------------------------------------------
+# CPT on raw text: each dataset just needs a `text` column. `type: completion`
+# tells Axolotl to train next-token-prediction on the raw field with no
+# prompt/response masking (every token contributes to the loss).
+#
+# Replace the `path:` below with your HF dataset repo id(s). List one entry
+# per language/dataset — Axolotl concatenates and shuffles them together.
+datasets:
+  - path: adityabanerjee13/hi-cpt-test-sample   # Hindi-only smoke-test sample (25k lines)
+    type: completion
+    field: text
+    split: train
+  # Add more language repos once ready to move past the smoke test, e.g.:
+  # - path: your-hf-username/indic-cpt-corpus-ta
+  #   type: completion
+  #   field: text
+  #   split: train
+
+dataset_prepared_path: ./last_run_prepared
+val_set_size: 0.001
+output_dir: ./outputs/qwen2.5-0.5b-indic-cpt-full
+
+# --- Sequence packing -----------------------------------------------------
+# Packs multiple short documents into each training sequence for efficient
+# CPT throughput on a small model.
+sequence_len: 4096
+sample_packing: true
+pad_to_sequence_len: true
+eval_sample_packing: false
+
+# --- Optimization ----------------------------------------------------------
+gradient_accumulation_steps: 8
+micro_batch_size: 4
+num_epochs: 1
+optimizer: adamw_torch_fused
+lr_scheduler: cosine
+learning_rate: 2e-5
+warmup_ratio: 0.03
+weight_decay: 0.01
+max_grad_norm: 1.0
+
+train_on_inputs: true
+group_by_length: false
+
+# --- Precision / memory (single consumer/cloud GPU) -------------------------
+bf16: auto
+fp16:
+tf32: true
+gradient_checkpointing: true
+flash_attention: true
+
+# No `deepspeed:` / `fsdp:` keys — single-GPU run, plain accelerate process.
+
+# --- Logging / checkpoints ---------------------------------------------
+logging_steps: 10
+save_strategy: steps
+save_steps: 500
+save_total_limit: 3
+evals_per_epoch: 4
+
+wandb_project: indic-cpt
+wandb_entity: models-na9841
+wandb_watch: gradients
+wandb_name: qwen2.5-0.5b-indic-cpt-full
+wandb_log_model: "false"
+
+# --- Hub push -------------------------------------------------------------
+# Pushes the final trained model to the Hugging Face Hub at the end of
+# training. Requires HF_TOKEN (write access) set in the environment.
+hub_model_id: adityabanerjee13/qwen2.5-0.5b-indic-cpt
+hub_strategy: end
+
+special_tokens:

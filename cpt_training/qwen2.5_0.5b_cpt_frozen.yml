@@ -1,0 +1,114 @@
+# ==============================================================================
+# Axolotl config — partial (frozen-layer) Continued Pre-Training (CPT) of
+# Qwen2.5-0.5B on Indic-language raw text, single GPU.
+#
+# Only the first few and last few transformer layers (plus embeddings/norm)
+# are trained; everything in between is frozen. See `unfrozen_parameters:`
+# below to adjust which layers train.
+#
+# Usage:
+#   pip install "axolotl[flash-attn]"
+#   axolotl train qwen2.5_0.5b_cpt_frozen.yml
+#   (or: python train.py   — see train.py in this same folder)
+#
+# Edit the `datasets:` section below to point at your HF dataset repo(s)
+# before running.
+# ==============================================================================
+
+base_model: Qwen/Qwen2.5-0.5B
+model_type: AutoModelForCausalLM
+tokenizer_type: AutoTokenizer
+trust_remote_code: false
+
+# --- No LoRA/QLoRA adapter, no quantization: freezing is done directly on ---
+# --- the base model's parameters instead (see unfrozen_parameters below). ---
+adapter:
+load_in_8bit: false
+load_in_4bit: false
+
+# --- Layer freezing ---------------------------------------------------------
+# Qwen2.5-0.5B has 24 transformer layers (model.layers.0 .. model.layers.23).
+# Only parameters matching one of these regexes stay trainable; every other
+# parameter gets requires_grad=False. Here: first 3 layers, last 3 layers,
+# the embedding table, and the final norm. lm_head is included too in case
+# tie_word_embeddings is off for your checkpoint (harmless if it's tied).
+# Adjust the layer indices to change how many layers train at each end.
+unfrozen_parameters:
+  - ^lm_head.weight$
+  - ^model.embed_tokens.weight$
+  - ^model.norm.weight$
+  - ^model.layers.0\.
+  - ^model.layers.1\.
+  - ^model.layers.2\.
+  - ^model.layers.21\.
+  - ^model.layers.22\.
+  - ^model.layers.23\.
+
+# --- Data ---------------------------------------------------------------
+# CPT on raw text: each dataset just needs a `text` column. `type: completion`
+# tells Axolotl to train next-token-prediction on the raw field with no
+# prompt/response masking (every token contributes to the loss).
+#
+# Replace the `path:` below with your HF dataset repo id(s). List one entry
+# per language/dataset — Axolotl concatenates and shuffles them together.
+datasets:
+  - path: adityabanerjee13/hi-cpt-test-sample   # Hindi-only smoke-test sample (25k lines)
+    type: completion
+    field: text
+    split: train
+
+dataset_prepared_path: ./last_run_prepared
+val_set_size: 0.001
+output_dir: ./outputs/qwen2.5-0.5b-indic-cpt-frozen
+
+# --- Sequence packing -----------------------------------------------------
+# Packs multiple short documents into each training sequence for efficient
+# CPT throughput on a small model.
+sequence_len: 4096
+sample_packing: true
+pad_to_sequence_len: true
+eval_sample_packing: false
+
+# --- Optimization ----------------------------------------------------------
+gradient_accumulation_steps: 8
+micro_batch_size: 4
+num_epochs: 1
+optimizer: adamw_torch_fused
+lr_scheduler: cosine
+learning_rate: 2e-5
+warmup_ratio: 0.03
+weight_decay: 0.01
+max_grad_norm: 1.0
+
+train_on_inputs: true
+group_by_length: false
+
+# --- Precision / memory (single consumer/cloud GPU) -------------------------
+bf16: auto
+fp16:
+tf32: true
+gradient_checkpointing: true
+flash_attention: true
+
+# No `deepspeed:` / `fsdp:` keys — single-GPU run, plain accelerate process.
+
+# --- Logging / checkpoints ---------------------------------------------
+logging_steps: 10
+save_strategy: steps
+save_steps: 500
+save_total_limit: 3
+evals_per_epoch: 4
+
+wandb_project: indic-cpt
+wandb_entity: models-na9841
+wandb_watch: gradients
+wandb_name: qwen2.5-0.5b-indic-cpt-frozen
+wandb_log_model: "false"
+
+# --- Hub push -------------------------------------------------------------
+# Pushes the final trained model to the Hugging Face Hub at the end of
+# training. Requires HF_TOKEN (write access) set in the environment.
+hub_model_id: adityabanerjee13/qwen2.5-0.5b-indic-cpt-frozen
+hub_strategy: end
+
+special_tokens:

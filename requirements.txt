@@ -1,0 +1,24 @@
+# --- Core ML / training ---
+# NOTE: on the rented GPU box (RunPod/Vast.ai), install the CUDA-matched torch
+# build instead of this generic one, e.g.:
+#   pip install torch --index-url https://download.pytorch.org/whl/cu121
+# This plain line is fine for local CPU-only dev/prep work.
+torch>=2.8.0
+transformers>=4.53.3
+accelerate>=1.10.1
+tokenizers>=0.21.4
+sentencepiece>=0.2.0        # required by BLOOM / Gemma / Llama SentencePiece tokenizers
+protobuf>=5.29.5            # required by sentencepiece-based tokenizers
+
+# --- Data download & processing ---
+huggingface_hub>=0.34.4
+datasets>=2.20.0
+numpy>=1.26.0
+
+# --- Evaluation (IndicGenBench: XQuAD, XOR-QA, CrossSum, Flores) ---
+evaluate>=0.4.0
+sacrebleu>=2.4.0             # BLEU / chrF for Flores-in translation
+rouge-score>=0.1.2           # ROUGE for CrossSum-in summarization
+
+# --- Utilities ---
+tqdm>=4.67.1

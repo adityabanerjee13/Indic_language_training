@@ -196,12 +196,12 @@ def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8")
 
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--model", default="qwen2.5:0.5b")
+    parser.add_argument("--model", default="qwen2.5-0.5b-indic-cpt")
     parser.add_argument("--num-examples", type=int, default=20, help="Sampled examples per task/language (per direction for flores)")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--tasks", nargs="*", default=list(TASK_RUNNERS.keys()), choices=list(TASK_RUNNERS.keys()))
     parser.add_argument("--langs", nargs="*", default=LANGS, choices=LANGS)
-    parser.add_argument("--output-dir", default=os.path.join(ROOT, "qwen_benchmark_results"))
+    parser.add_argument("--output-dir", default=os.path.join(ROOT, "qwen_ft_ollama_full_benchmark_results"))
     args = parser.parse_args()
 
     os.makedirs(args.output_dir, exist_ok=True)

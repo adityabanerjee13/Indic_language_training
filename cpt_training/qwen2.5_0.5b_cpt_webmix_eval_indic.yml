@@ -1,0 +1,45 @@
+# ==============================================================================
+# Axolotl standalone-evaluate config — INDIC-only held-out loss for the
+# checkpoint trained by qwen2.5_0.5b_cpt_webmix.yml (Indic+FineWeb 1:1 mix).
+#
+# Way 2: run this AFTER training to get an Indic-only eval_loss on data never
+# seen in training (see the companion _eval_web.yml for the web-only number):
+#
+#   axolotl evaluate qwen2.5_0.5b_cpt_webmix_eval_indic.yml
+#
+# Settings below (sequence_len, eval_sample_packing, batch size) are kept
+# identical to the web eval config so the two numbers are directly comparable.
+# ==============================================================================
+
+base_model: ./outputs/qwen2.5-0.5b-indic-webmix-cpt-full   # trained checkpoint
+model_type: AutoModelForCausalLM
+tokenizer_type: AutoTokenizer
+trust_remote_code: false
+
+# Same held-out Indic slice as the training config's test_datasets.
+test_datasets:
+  - path: adityabanerjee13/indic-cpt-mini
+    type: completion
+    field: text
+    split: train[29577:]
+
+val_set_size: 0
+dataset_num_proc: 1
+dataset_prepared_path: ./last_run_prepared_eval_indic
+output_dir: ./outputs/qwen2.5-0.5b-indic-webmix-cpt-full/eval-indic
+
+sequence_len: 4096
+sample_packing: true
+pad_to_sequence_len: true
+eval_sample_packing: false
+micro_batch_size: 4
+
+bf16: auto
+tf32: true
+flash_attention: true
+
+wandb_project: indic-cpt
+wandb_entity: models-na9841
+wandb_name: qwen2.5-0.5b-indic-webmix-cpt-full-eval-indic
+
+special_tokens:

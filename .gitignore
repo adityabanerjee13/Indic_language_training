@@ -7,4 +7,7 @@ IndicGenBench/qwen_benchmark_results*
 IndicGenBench/flores_in*
 IndicGenBench/crosssum_in*
 IndicGenBench/__pycache__*
+IndicGenBench/qwen_ft_benchmark_results*
+IndicGenBench/qwen_ft_ollama_benchmark_results*
+IndicGenBench/qwen_ft_ollama_full_benchmark_results*
 .env

@@ -1,0 +1,125 @@
+# ==============================================================================
+# Axolotl config — full-parameter Continued Pre-Training (CPT) of Qwen2.5-0.5B
+# on a 1:1 mix of Indic-language data and general web-crawl data (FineWeb),
+# single GPU. All weights are trainable (no layer freezing).
+#
+# During training, Axolotl merges the two `test_datasets:` into ONE eval set,
+# so the live eval_loss is a blended indic+web number (a rough "is it learning"
+# signal). For SEPARATE per-source numbers, run the two standalone evaluate
+# configs against the finished checkpoint (Way 2):
+#   axolotl evaluate qwen2.5_0.5b_cpt_webmix_eval_indic.yml
+#   axolotl evaluate qwen2.5_0.5b_cpt_webmix_eval_web.yml
+#
+# Usage:
+#   pip install "axolotl[flash-attn]"
+#   python train.py --config qwen2.5_0.5b_cpt_webmix.yml
+# ==============================================================================
+
+base_model: Qwen/Qwen2.5-0.5B
+model_type: AutoModelForCausalLM
+tokenizer_type: AutoTokenizer
+trust_remote_code: false
+
+# --- Full-parameter fine-tuning: no LoRA/QLoRA adapter, no quantization ---
+# No `unfrozen_parameters:` here — every weight trains.
+adapter:
+load_in_8bit: false
+load_in_4bit: false
+
+# --- Data ---------------------------------------------------------------
+# CPT on raw text: each dataset just needs a `text` column. `type: completion`
+# tells Axolotl to train next-token-prediction on the raw field with no
+# prompt/response masking (every token contributes to the loss).
+#
+# 1:1 mix experiment: indic-cpt-mini (30,777 rows total) vs an equal-sized
+# slice of FineWeb (general web crawl, ~14.9M rows in sample-10BT, so the
+# slice below is a negligible fraction of it). Each source contributes
+# 29,577 training rows; the remaining 1,200 rows from each are held out
+# below under `test_datasets:` and re-used by the two evaluate configs so the
+# per-source numbers cover exactly the data never seen in training.
+datasets:
+  - path: adityabanerjee13/indic-cpt-mini
+    type: completion
+    field: text
+    split: train[:29577]
+  - path: HuggingFaceFW/fineweb
+    # Pin to ONE parquet file (~2.15 GB, ~990k rows) instead of the whole
+    # sample-10BT config (30.6 GB / 15 files) — HF downloads every listed
+    # file before slicing, so `name: sample-10BT` would pull all 30 GB.
+    data_files: sample/10BT/000_00000.parquet
+    type: completion
+    field: text
+    split: train[:29577]
+
+# Held-out eval sets. During training these are MERGED into one blended
+# eval_loss; the per-source split is done post-hoc by the evaluate configs.
+test_datasets:
+  - path: adityabanerjee13/indic-cpt-mini
+    type: completion
+    field: text
+    split: train[29577:]
+  - path: HuggingFaceFW/fineweb
+    data_files: sample/10BT/000_00000.parquet   # same single file as above
+    type: completion
+    field: text
+    split: train[29577:30777]
+
+dataset_prepared_path: ./last_run_prepared
+# Single-process tokenization. Axolotl otherwise runs dataset.map with
+# num_proc = cpu_count, and forking that many workers with HF fast tokenizers
+# can deadlock (all workers pinned at 0% CPU). 60k rows tokenize fast anyway.
+dataset_num_proc: 1
+val_set_size: 0
+output_dir: ./outputs/qwen2.5-0.5b-indic-webmix-cpt-full
+
+# --- Sequence packing -----------------------------------------------------
+# Packs multiple short documents into each training sequence for efficient
+# CPT throughput on a small model.
+sequence_len: 4096
+sample_packing: true
+pad_to_sequence_len: true
+eval_sample_packing: false
+
+# --- Optimization ----------------------------------------------------------
+gradient_accumulation_steps: 8
+micro_batch_size: 4
+num_epochs: 2
+optimizer: adamw_torch_fused
+lr_scheduler: cosine
+learning_rate: 2e-5
+warmup_ratio: 0.03
+weight_decay: 0.01
+max_grad_norm: 1.0
+
+train_on_inputs: true
+group_by_length: false
+
+# --- Precision / memory (single consumer/cloud GPU) -------------------------
+bf16: auto
+fp16:
+tf32: true
+gradient_checkpointing: true
+flash_attention: true
+
+# No `deepspeed:` / `fsdp:` keys — single-GPU run, plain accelerate process.
+
+# --- Logging / checkpoints ---------------------------------------------
+logging_steps: 10
+save_strategy: steps
+save_steps: 500
+save_total_limit: 3
+evals_per_epoch: 4
+
+wandb_project: indic-cpt
+wandb_entity: models-na9841
+wandb_watch: gradients
+wandb_name: qwen2.5-0.5b-indic-webmix-cpt-full
+wandb_log_model: "false"
+
+# --- Hub push -------------------------------------------------------------
+# Pushes the final trained model to the Hugging Face Hub at the end of
+# training. Requires HF_TOKEN (write access) set in the environment.
+hub_model_id: adityabanerjee13/qwen2.5-0.5b-indic-webmix-cpt-full
+hub_strategy: end
+
+special_tokens:

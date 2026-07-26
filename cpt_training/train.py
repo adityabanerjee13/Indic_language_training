@@ -73,6 +73,14 @@ def main() -> None:
 
     env = os.environ.copy()
     env["CUDA_VISIBLE_DEVICES"] = str(args.gpu)
+    # Avoid the HF fast-tokenizer fork deadlock during dataset.map preprocessing.
+    env["TOKENIZERS_PARALLELISM"] = "false"
+
+    # Put this folder on PYTHONPATH so config-referenced local plugins
+    # (e.g. multi_eval_plugin.MultiEvalPlugin) are importable by axolotl.
+    env["PYTHONPATH"] = os.pathsep.join(
+        p for p in [str(SCRIPT_DIR), env.get("PYTHONPATH", "")] if p
+    )
 
     axolotl_bin = shutil.which("axolotl")
     if axolotl_bin:

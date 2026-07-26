@@ -52,7 +52,7 @@ unfrozen_parameters:
 # Replace the `path:` below with your HF dataset repo id(s). List one entry
 # per language/dataset — Axolotl concatenates and shuffles them together.
 datasets:
-  - path: adityabanerjee13/hi-cpt-test-sample   # Hindi-only smoke-test sample (25k lines)
+  - path: adityabanerjee13/indic-cpt-mini
     type: completion
     field: text
     split: train

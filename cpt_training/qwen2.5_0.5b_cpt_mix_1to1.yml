@@ -1,14 +1,19 @@
 # ==============================================================================
-# Axolotl config — full-parameter Continued Pre-Training (CPT) of Qwen2.5-0.5B
-# on Indic-language raw text, single GPU.
+# Axolotl CPT config — Qwen2.5-0.5B, full-parameter, single GPU.
+# Data mix RATIO EXPERIMENT (character-level exact):
+#
+#   RUN 1 of 3 — fineweb : indic = 1 : 1
+#   FineWeb web-crawl chars == Indic train chars (7,907,882 each).
+#
+# Indic train  : adityabanerjee13/indic-cpt-mini-train   (7,907,882 chars)
+# FineWeb train: adityabanerjee13/fineweb-cpt-1x         (7,907,882 chars)
+# Validation   : adityabanerjee13/indic-cpt-mini-val     (held-out 1% Indic)
+#
+# The datasets are pre-sized to exact character counts on the Hub, so loading
+# each one whole gives the exact 1:1 ratio — no slicing needed.
 #
 # Usage:
-#   pip install "axolotl[flash-attn]"
-#   axolotl train qwen2.5_0.5b_cpt_full.yml
-#   (or: python train.py   — see train.py in this same folder)
-#
-# Edit the `datasets:` section below to point at your HF dataset repo(s)
-# before running.
+#   python train.py --config qwen2.5_0.5b_cpt_mix_1to1.yml
 # ==============================================================================
 
 base_model: Qwen/Qwen2.5-0.5B
@@ -16,7 +21,6 @@ model_type: AutoModelForCausalLM
 tokenizer_type: AutoTokenizer
 trust_remote_code: false
 
-# --- Full-parameter fine-tuning: no LoRA/QLoRA adapter, no quantization ---
 adapter:
 load_in_8bit: false
 load_in_4bit: false
@@ -29,15 +33,13 @@ load_in_4bit: false
 plugins:
   - multi_eval_plugin.MultiEvalPlugin
 
-# --- Data ---------------------------------------------------------------
-# CPT on raw text: each dataset just needs a `text` column. `type: completion`
-# tells Axolotl to train next-token-prediction on the raw field with no
-# prompt/response masking (every token contributes to the loss).
-#
-# Replace the `path:` below with your HF dataset repo id(s). List one entry
-# per language/dataset — Axolotl concatenates and shuffles them together.
+# --- Data: 1:1 Indic/FineWeb mix (equal characters) -----------------------
 datasets:
   - path: adityabanerjee13/indic-cpt-mini-train
+    type: completion
+    field: text
+    split: train
+  - path: adityabanerjee13/fineweb-cpt-1x
     type: completion
     field: text
     split: train
@@ -54,14 +56,12 @@ test_datasets:
     field: text
     split: train
 
-dataset_prepared_path: ./last_run_prepared
+dataset_prepared_path: ./last_run_prepared_1to1
 dataset_num_proc: 1          # single-process tokenize: avoids fork deadlock
 val_set_size: 0
-output_dir: ./outputs/qwen2.5-0.5b-indic-cpt-full
+output_dir: ./outputs/qwen2.5-0.5b-cpt-mix-1to1
 
 # --- Sequence packing -----------------------------------------------------
-# Packs multiple short documents into each training sequence for efficient
-# CPT throughput on a small model.
 sequence_len: 4096
 sample_packing: true
 pad_to_sequence_len: true
@@ -81,34 +81,28 @@ max_grad_norm: 1.0
 train_on_inputs: true
 group_by_length: false
 
-# --- Precision / memory (single consumer/cloud GPU) -------------------------
+# --- Precision / memory ---------------------------------------------------
 bf16: auto
 fp16:
 tf32: true
 gradient_checkpointing: true
 flash_attention: true
 
-# No `deepspeed:` / `fsdp:` keys — single-GPU run, plain accelerate process.
-
-# --- Logging / checkpoints ---------------------------------------------
+# --- Logging / checkpoints ------------------------------------------------
 logging_steps: 10
 save_strategy: steps
-save_steps: 10
-save_total_limit: 30
+save_steps: 500
+save_total_limit: 3
 save_only_model: true   # save weights only — no optimizer/scheduler state
                         # (checkpoints ~1/3 the size; can't resume training)
 evals_per_epoch: 4
 
 wandb_project: indic-cpt
 wandb_entity: models-na9841
-wandb_watch: gradients
-wandb_name: qwen2.5-0.5b-indic-cpt-full
+wandb_name: qwen2.5-0.5b-cpt-mix-1to1
 wandb_log_model: "false"
 
-# --- Hub push -------------------------------------------------------------
-# Pushes the final trained model to the Hugging Face Hub at the end of
-# training. Requires HF_TOKEN (write access) set in the environment.
-hub_model_id: adityabanerjee13/qwen2.5-0.5b-indic-cpt
+hub_model_id: adityabanerjee13/qwen2.5-0.5b-cpt-mix-1to1
 hub_strategy: end
 
 special_tokens:

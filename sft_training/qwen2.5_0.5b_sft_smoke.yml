@@ -1,0 +1,83 @@
+# ==============================================================================
+# Axolotl config — SMOKE TEST for supervised fine-tuning (SFT) of Qwen2.5-0.5B
+# on the 800-example Indic instruction sample, single GPU.
+#
+# Purpose: verify the SFT pipeline runs end-to-end (data loading, chat template,
+# tokenization, masking, a handful of optimizer steps). NOT for a usable model.
+#
+# Usage:
+#   pip install "axolotl[flash-attn]"
+#   axolotl train qwen2.5_0.5b_sft_smoke.yml
+# ==============================================================================
+
+# Start SFT from the continued-pretrained checkpoint (the real pipeline: CPT -> SFT).
+# Swap to Qwen/Qwen2.5-0.5B if you want to smoke-test SFT on the raw base model.
+base_model: adityabanerjee13/qwen2.5-0.5b-cpt-mix-1to2
+model_type: AutoModelForCausalLM
+tokenizer_type: AutoTokenizer
+trust_remote_code: false
+
+# --- Full-parameter fine-tuning: no LoRA/QLoRA adapter, no quantization ---
+adapter:
+load_in_8bit: false
+load_in_4bit: false
+
+# --- Data -----------------------------------------------------------------
+# SFT on chat data: the dataset has a `messages` column of {role, content} turns.
+# `type: chat_template` applies the model's chat template and (with
+# train_on_inputs: false) masks the loss so ONLY assistant turns are trained on.
+datasets:
+  - path: adityabanerjee13/indic-sft-smoke      # 800-example smoke sample (80/language)
+    type: chat_template
+    field_messages: messages
+    split: train
+
+chat_template: tokenizer_default   # use Qwen2.5's own chat template
+train_on_inputs: false             # SFT: train on assistant responses only (KEY diff vs CPT)
+
+dataset_prepared_path: ./last_run_prepared
+val_set_size: 0.02
+output_dir: ./outputs/qwen2.5-0.5b-indic-sft-smoke
+
+# --- Sequence length ------------------------------------------------------
+sequence_len: 4096
+sample_packing: false          # off for a small smoke run (simpler, avoids packing edge cases)
+pad_to_sequence_len: true
+eval_sample_packing: false
+
+# --- Optimization (capped for smoke testing) ------------------------------
+max_steps: 20                  # <-- hard cap: smoke test only, ignores num_epochs
+num_epochs: 1
+gradient_accumulation_steps: 2
+micro_batch_size: 2
+optimizer: adamw_torch_fused
+lr_scheduler: cosine
+learning_rate: 1e-5
+warmup_ratio: 0.0
+weight_decay: 0.01
+max_grad_norm: 1.0
+
+group_by_length: false
+
+# --- Precision / memory (single consumer/cloud GPU) -----------------------
+bf16: auto
+fp16:
+tf32: true
+gradient_checkpointing: true
+flash_attention: true
+
+# --- Logging / checkpoints (minimal for smoke) ----------------------------
+logging_steps: 1
+save_strategy: "no"            # don't bother checkpointing a smoke run
+evals_per_epoch: 1
+
+# wandb disabled for a standalone smoke test (no external logging deps).
+# Uncomment to enable:
+# wandb_project: indic-sft
+# wandb_name: qwen2.5-0.5b-indic-sft-smoke
+
+# No hub push for a smoke test — this run is throwaway.
+# hub_model_id:
+# hub_strategy:
+
+special_tokens:

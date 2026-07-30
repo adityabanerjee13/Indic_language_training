@@ -49,7 +49,7 @@ from run_qwen_benchmark import (  # noqa: E402
 )
 from metrics import run_benchmark  # noqa: E402
 
-DEFAULT_MODEL = "adityabanerjee13/qwen2.5-0.5b-cpt-mix-1to4"
+DEFAULT_MODEL = "sarvamai/sarvam-1"
 DEFAULT_OUTPUT_DIR = os.path.join(ROOT, "qwen_ft_benchmark_results")
 DEFAULT_BATCH = 128  # prompts per forward pass (higher = faster, more memory)
 

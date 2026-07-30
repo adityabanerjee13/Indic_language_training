@@ -1,0 +1,28 @@
+{
+  "total_records": 80000,
+  "by_language": {
+    "bn": 8000,
+    "gu": 8000,
+    "hi": 8000,
+    "kn": 8000,
+    "ml": 8000,
+    "mr": 8000,
+    "or": 8000,
+    "pa": 8000,
+    "ta": 8000,
+    "te": 8000
+  },
+  "by_source": {
+    "indic_sharellama": 15000,
+    "dolly_t": 15000,
+    "openassistant_t": 12500,
+    "wikihow": 12500,
+    "wiki_conv": 15000,
+    "wiki_chat": 10000
+  },
+  "by_task": {
+    "instruction": 30000,
+    "chat": 37500,
+    "howto": 12500
+  }
+}

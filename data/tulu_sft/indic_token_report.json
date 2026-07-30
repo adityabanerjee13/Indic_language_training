@@ -1,0 +1,18 @@
+{
+  "tokenizer": "Qwen/Qwen2.5-0.5B",
+  "indic_records": 80000,
+  "indic_total_tokens": 232334967,
+  "indic_avg_tokens_per_record": 2904.1870875,
+  "by_language_tokens": {
+    "bn": 18042605,
+    "gu": 23950026,
+    "hi": 15964548,
+    "kn": 24731336,
+    "ml": 25679179,
+    "mr": 16342982,
+    "or": 34898347,
+    "pa": 25477393,
+    "ta": 21702062,
+    "te": 25546489
+  }
+}

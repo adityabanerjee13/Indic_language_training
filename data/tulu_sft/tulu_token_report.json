@@ -1,0 +1,9 @@
+{
+  "tokenizer": "Qwen/Qwen2.5-0.5B",
+  "tulu_repo": "allenai/tulu-3-sft-mixture",
+  "target_tokens_half_of_indic": 116167483,
+  "tulu_kept_examples": 138488,
+  "tulu_total_tokens": 116168274,
+  "tulu_skipped": 0,
+  "achieved_ratio_tulu_over_indic": 0.5000034024151001
+}

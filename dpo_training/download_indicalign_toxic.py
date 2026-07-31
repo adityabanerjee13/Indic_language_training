@@ -19,8 +19,8 @@ Output: data/indicalign_toxic_pairs.jsonl
 
 Requirements: pip install huggingface_hub pyarrow pandas
 Usage:
-    python download_indicalign_toxic.py                     # default 500 rows/source
-    python download_indicalign_toxic.py --rows-per-source 1000
+    python download_indicalign_toxic.py                        # 1500 pairs/lang/source
+    python download_indicalign_toxic.py --pairs-per-lang-per-source 500
 """
 
 import argparse
@@ -92,8 +92,15 @@ def split_prompt_chosen(msgs):
     return msgs[:-1], [msgs[-1]]
 
 
-def collect_pairs(fs, rel, source, rows_per_source, cols):
-    pairs, scanned = [], 0
+def collect_pairs(fs, rel, source, per_lang_target, cols):
+    """Scan until each language has `per_lang_target` valid pairs (or the file
+    is exhausted), then trim each language to exactly that many."""
+    by_lang = {short: [] for short in LANG_COLS}
+    scanned = 0
+
+    def done():
+        return all(len(by_lang[s]) >= per_lang_target for s in LANG_COLS)
+
     with fs.open(f"{REPO}/{rel}") as f:
         pf = pq.ParquetFile(f)
         for batch in pf.iter_batches(batch_size=512, columns=cols):
@@ -102,6 +109,8 @@ def collect_pairs(fs, rel, source, rows_per_source, cols):
                 scanned += 1
                 row = df.iloc[ridx]
                 for short, col in LANG_COLS.items():
+                    if len(by_lang[short]) >= per_lang_target:
+                        continue
                     if col not in df.columns:
                         continue
                     msgs = to_messages(row[col])
@@ -111,24 +120,32 @@ def collect_pairs(fs, rel, source, rows_per_source, cols):
                     if split is None:
                         continue
                     prompt_msgs, chosen_msgs = split
-                    pairs.append({
+                    by_lang[short].append({
                         "language": short,
                         "source": f"indicalign/{source}",
                         "prompt": prompt_msgs,
                         "chosen": chosen_msgs,
                     })
-                if scanned >= rows_per_source:
+                if done():
                     break
-            if scanned >= rows_per_source:
+            if done():
                 break
+
+    pairs = []
+    for short in LANG_COLS:
+        got = len(by_lang[short])
+        if got < per_lang_target:
+            print(f"  WARNING: {source}/{short} only {got} (< {per_lang_target})")
+        pairs.extend(by_lang[short][:per_lang_target])
     return pairs, scanned
 
 
 def main():
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--rows-per-source", type=int, default=500,
-                    help="Source rows to read per sub-dataset (each row -> up to 10 pairs).")
+    ap.add_argument("--pairs-per-lang-per-source", type=int, default=1500,
+                    help="Exact pairs collected per language from EACH source "
+                         "(default 1500 -> 3000/lang total across the 2 sources).")
     ap.add_argument("--output", default=OUT_FILE)
     args = ap.parse_args()
 
@@ -141,8 +158,8 @@ def main():
     all_pairs = []
 
     for rel, source in SUBSETS:
-        print(f"[fetch] {source}: reading up to {args.rows_per_source} rows from {rel.split('/')[-1]} ...")
-        pairs, scanned = collect_pairs(fs, rel, source, args.rows_per_source, cols)
+        print(f"[fetch] {source}: collecting {args.pairs_per_lang_per_source} pairs/lang from {rel.split('/')[-1]} ...")
+        pairs, scanned = collect_pairs(fs, rel, source, args.pairs_per_lang_per_source, cols)
         for p in pairs:
             by_lang[p["language"]] += 1
             by_source[source] += 1

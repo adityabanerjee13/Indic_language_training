@@ -1,0 +1,108 @@
+# ==============================================================================
+# Axolotl CPT config — Qwen2.5-0.5B, full-parameter, single GPU.
+# Data mix RATIO EXPERIMENT (character-level exact):
+#
+#   RUN 2 of 3 — fineweb : indic = 1 : 2   (FineWeb is HALF the Indic size)
+#   FineWeb web-crawl chars == Indic train chars / 2.
+#
+# Indic train  : adityabanerjee13/indic-cpt-mini-train   (7,907,882 chars)
+# FineWeb train: adityabanerjee13/fineweb-cpt-half       (3,953,941 chars)
+# Validation   : adityabanerjee13/indic-cpt-mini-val     (held-out 1% Indic)
+#
+# The datasets are pre-sized to exact character counts on the Hub, so loading
+# each one whole gives the exact 1:2 ratio — no slicing needed.
+#
+# Usage:
+#   python train.py --config qwen2.5_0.5b_cpt_mix_1to2.yml
+# ==============================================================================
+
+base_model: adityabanerjee13/qwen2.5-0.5b-cpt-mix-1to2
+model_type: AutoModelForCausalLM
+tokenizer_type: AutoTokenizer
+trust_remote_code: false
+
+adapter:
+load_in_8bit: false
+load_in_4bit: false
+
+# multi_eval_plugin splits test_datasets back into per-source eval sets so
+# this run logs eval_indic_cpt_mini_val_loss and eval_fineweb_cpt_val_loss
+# separately (instead of one merged eval_loss) at every eval step, incl. to
+# wandb. Requires this folder on PYTHONPATH — launch via
+# `python train.py --config <this file>`.
+plugins:
+  - multi_eval_plugin.MultiEvalPlugin
+
+# --- Data: fineweb = 1/2 the Indic characters -----------------------------
+datasets:
+  - path: adityabanerjee13/indic-sft-mini-train
+    type: completion
+    field: text
+    split: train
+  - path: adityabanerjee13/tulu-sft-mini-train
+    type: completion
+    field: text
+    split: train
+
+# Validation = held-out Indic slice + char-matched FineWeb slice, logged as
+# separate eval_*_loss metrics by multi_eval_plugin (see `plugins:` above).
+test_datasets:
+  - path: adityabanerjee13/indic-sft-mini-val
+    type: completion
+    field: text
+    split: train
+  - path: adityabanerjee13/tulu-sft-mini-val
+    type: completion
+    field: text
+    split: train
+
+dataset_prepared_path: ./last_run_prepared_1to2
+dataset_num_proc: 1          # single-process tokenize: avoids fork deadlock
+val_set_size: 0
+output_dir: ./outputs/qwen2.5-0.5b-sft-IT
+
+# --- Sequence packing -----------------------------------------------------
+sequence_len: 4096
+sample_packing: true
+pad_to_sequence_len: true
+eval_sample_packing: false
+
+# --- Optimization ----------------------------------------------------------
+gradient_accumulation_steps: 8
+micro_batch_size: 4
+num_epochs: 2
+optimizer: adamw_torch_fused
+lr_scheduler: cosine
+learning_rate: 2e-5
+warmup_ratio: 0.03
+weight_decay: 0.01
+max_grad_norm: 1.0
+
+train_on_inputs: true
+group_by_length: false
+
+# --- Precision / memory ---------------------------------------------------
+bf16: auto
+fp16:
+tf32: true
+gradient_checkpointing: true
+flash_attention: true
+
+# --- Logging / checkpoints ------------------------------------------------
+logging_steps: 10
+save_strategy: steps
+save_steps: 500
+save_total_limit: 30
+save_only_model: true   # save weights only — no optimizer/scheduler state
+                        # (checkpoints ~1/3 the size; can't resume training)
+evals_per_epoch: 4
+
+wandb_project: indic-sft
+wandb_entity: models-na9841
+wandb_name: qwen2.5-0.5b-sft-IT
+wandb_log_model: "false"
+
+hub_model_id: adityabanerjee13/qwen2.5-0.5b-sft-IT
+hub_strategy: end
+
+special_tokens:

@@ -11,3 +11,9 @@ IndicGenBench/qwen_ft_benchmark_results*
 IndicGenBench/qwen_ft_ollama_benchmark_results*
 IndicGenBench/qwen_ft_ollama_full_benchmark_results*
 .env
+sft_training\BPCC_SFT_Assessment.md
+sft_training\Additional_Indic_SFT_Datasets.md
+IndicAlign_SFT_Assessment.md
+CURATION_PLAN_SFT_DPO.md
+*.jsonl
+data\capped\cap_report.json

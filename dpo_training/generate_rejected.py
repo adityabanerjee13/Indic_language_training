@@ -41,6 +41,29 @@ import os
 import sys
 
 
+def count_completed(out_path):
+    """Return how many valid triplets already exist in `out_path`, rewriting the
+    file to drop any blank/partial trailing line so appends stay clean.
+    A run can then skip that many input records and resume by appending."""
+    if not os.path.exists(out_path):
+        return 0
+    good = []
+    with open(out_path, encoding="utf-8") as f:
+        for line in f:
+            s = line.strip()
+            if not s:
+                continue
+            try:
+                json.loads(s)
+            except Exception:
+                break  # first corrupt/partial line -> stop; everything after is dropped
+            good.append(s)
+    with open(out_path, "w", encoding="utf-8") as f:
+        for s in good:
+            f.write(s + "\n")
+    return len(good)
+
+
 def pick_device(requested):
     import torch
     if requested and requested != "auto":
@@ -75,6 +98,9 @@ def main():
     ap.add_argument("--input", default="data/indicalign_toxic_pairs.jsonl")
     ap.add_argument("--output", default="data/dpo_triplets.jsonl")
     ap.add_argument("--limit", type=int, default=None, help="Only process the first N pairs (for testing).")
+    ap.add_argument("--overwrite", action="store_true",
+                    help="Start fresh (ignore/replace any existing output). Default: resume + append.")
+    ap.add_argument("--batch-size", type=int, default=16)
     ap.add_argument("--max-new-tokens", type=int, default=256)
     ap.add_argument("--temperature", type=float, default=0.8)
     ap.add_argument("--top-p", type=float, default=0.95)
@@ -87,25 +113,6 @@ def main():
     out_path = args.output if os.path.isabs(args.output) else os.path.join(here, args.output)
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
 
-    import torch
-    from transformers import AutoModelForCausalLM, AutoTokenizer, set_seed
-    set_seed(args.seed)
-
-    device = pick_device(args.device)
-    print(f"[load] model={args.model}  device={device}")
-    tokenizer = AutoTokenizer.from_pretrained(args.model)
-    if tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.eos_token
-    dtype = torch.float32 if device == "cpu" else torch.float16
-    model = AutoModelForCausalLM.from_pretrained(args.model, torch_dtype=dtype)
-    try:
-        model.to(device)
-    except Exception as e:
-        print(f"  WARNING: could not move model to {device} ({e!r}); falling back to cpu")
-        device = "cpu"
-        model.to(device)
-    model.eval()
-
     # Load pairs
     pairs = []
     with open(in_path, encoding="utf-8") as f:
@@ -115,39 +122,73 @@ def main():
                 pairs.append(json.loads(line))
     if args.limit:
         pairs = pairs[: args.limit]
-    print(f"[gen] generating rejected responses for {len(pairs)} pairs ...")
+
+    # Resume: skip pairs already present in the output (unless --overwrite).
+    if args.overwrite and os.path.exists(out_path):
+        os.remove(out_path)
+    done = count_completed(out_path)
+    if done:
+        print(f"[resume] {done} triplets already in {os.path.basename(out_path)}; skipping those.")
+    pairs = pairs[done:]
+    if not pairs:
+        print(f"[done] nothing to do — output already has all {done} triplets.")
+        return
+
+    import torch
+    from transformers import AutoModelForCausalLM, AutoTokenizer, set_seed
+    set_seed(args.seed)
+
+    device = pick_device(args.device)
+    print(f"[load] model={args.model}  device={device}")
+    tokenizer = AutoTokenizer.from_pretrained(args.model)
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.padding_side = "left"  # required for correct batched causal generation
+    dtype = torch.float32 if device == "cpu" else torch.float16
+    model = AutoModelForCausalLM.from_pretrained(args.model, dtype=dtype)
+    try:
+        model.to(device)
+    except Exception as e:
+        print(f"  WARNING: could not move model to {device} ({e!r}); falling back to cpu")
+        device = "cpu"
+        model.to(device)
+    model.eval()
+
+    from tqdm import tqdm
+    print(f"[gen] generating rejected for {len(pairs)} remaining pairs; batch_size={args.batch_size} ...")
 
     n_written = 0
-    with open(out_path, "w", encoding="utf-8") as out_f:
-        for i, pair in enumerate(pairs):
-            prompt_msgs = pair["prompt"]
-            prompt_text = build_prompt_text(tokenizer, prompt_msgs)
-            inputs = tokenizer(prompt_text, return_tensors="pt").to(device)
+    with open(out_path, "a", encoding="utf-8") as out_f:
+        for start in tqdm(range(0, len(pairs), args.batch_size),
+                          desc="rejected", unit="batch"):
+            batch = pairs[start:start + args.batch_size]
+            texts = [build_prompt_text(tokenizer, p["prompt"]) for p in batch]
+            enc = tokenizer(texts, return_tensors="pt", padding=True,
+                            truncation=True, max_length=2048).to(device)
             with torch.no_grad():
                 out = model.generate(
-                    **inputs,
+                    **enc,
                     max_new_tokens=args.max_new_tokens,
                     do_sample=True,
                     temperature=args.temperature,
                     top_p=args.top_p,
                     pad_token_id=tokenizer.pad_token_id,
                 )
-            gen_tokens = out[0][inputs["input_ids"].shape[1]:]
-            rejected_text = tokenizer.decode(gen_tokens, skip_special_tokens=True).strip()
+            gen = out[:, enc["input_ids"].shape[1]:]  # left-padded -> uniform slice point
+            decoded = tokenizer.batch_decode(gen, skip_special_tokens=True)
+            for pair, rejected_text in zip(batch, decoded):
+                triplet = {
+                    "language": pair.get("language"),
+                    "source": pair.get("source"),
+                    "prompt": pair["prompt"],
+                    "chosen": pair["chosen"],
+                    "rejected": [{"role": "assistant", "content": rejected_text.strip()}],
+                }
+                out_f.write(json.dumps(triplet, ensure_ascii=False) + "\n")
+                n_written += 1
+            out_f.flush()  # persist each batch so a kill leaves a clean resume point
 
-            triplet = {
-                "language": pair.get("language"),
-                "source": pair.get("source"),
-                "prompt": prompt_msgs,
-                "chosen": pair["chosen"],
-                "rejected": [{"role": "assistant", "content": rejected_text}],
-            }
-            out_f.write(json.dumps(triplet, ensure_ascii=False) + "\n")
-            n_written += 1
-            print(f"  [{i+1}/{len(pairs)}] lang={pair.get('language')} "
-                  f"chosen_len={len(pair['chosen'][0]['content'])} rejected_len={len(rejected_text)}")
-
-    print(f"\n[done] wrote {n_written} DPO triplets -> {out_path}")
+    print(f"\n[done] wrote {n_written} new triplets ({done + n_written} total) -> {out_path}")
 
 
 if __name__ == "__main__":

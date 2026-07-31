@@ -34,6 +34,29 @@ import os
 import sys
 
 
+def count_completed(out_path):
+    """Return how many valid triplets already exist in `out_path`, rewriting the
+    file to drop any blank/partial trailing line so appends stay clean.
+    A run can then skip that many input records and resume by appending."""
+    if not os.path.exists(out_path):
+        return 0
+    good = []
+    with open(out_path, encoding="utf-8") as f:
+        for line in f:
+            s = line.strip()
+            if not s:
+                continue
+            try:
+                json.loads(s)
+            except Exception:
+                break  # first corrupt/partial line -> stop; everything after is dropped
+            good.append(s)
+    with open(out_path, "w", encoding="utf-8") as f:
+        for s in good:
+            f.write(s + "\n")
+    return len(good)
+
+
 def pick_device(requested):
     import torch
     if requested and requested != "auto":
@@ -70,6 +93,8 @@ def main():
     ap.add_argument("--model", default="Qwen/Qwen2.5-0.5B",
                     help="HF model path for the rejected generator. Default: Qwen/Qwen2.5-0.5B.")
     ap.add_argument("--limit", type=int, default=None, help="Process only the first N records (for testing).")
+    ap.add_argument("--overwrite", action="store_true",
+                    help="Start fresh (ignore/replace any existing output). Default: resume + append.")
     ap.add_argument("--batch-size", type=int, default=16)
     ap.add_argument("--max-new-tokens", type=int, default=256)
     ap.add_argument("--temperature", type=float, default=0.8)
@@ -82,6 +107,35 @@ def main():
     in_path = args.input if os.path.isabs(args.input) else os.path.join(here, args.input)
     out_path = args.output if os.path.isabs(args.output) else os.path.join(here, args.output)
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
+
+    # ---- load records, split into prompt/chosen (prompt_text built later) ----
+    items = []  # (record_meta, prompt_msgs, chosen_msgs)
+    skipped = 0
+    with open(in_path, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            r = json.loads(line)
+            sc = split_prompt_chosen(r.get("messages", []))
+            if sc is None:
+                skipped += 1
+                continue
+            prompt_msgs, chosen_msgs = sc
+            items.append((r, prompt_msgs, chosen_msgs))
+    if args.limit:
+        items = items[: args.limit]
+
+    # Resume: skip records already present in the output (unless --overwrite).
+    if args.overwrite and os.path.exists(out_path):
+        os.remove(out_path)
+    done = count_completed(out_path)
+    if done:
+        print(f"[resume] {done} triplets already in {os.path.basename(out_path)}; skipping those.")
+    items = items[done:]
+    if not items:
+        print(f"[done] nothing to do — output already has all {done} triplets ({skipped} skipped).")
+        return
 
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer, set_seed
@@ -103,30 +157,15 @@ def main():
         model.to(device)
     model.eval()
 
-    # ---- load records, split into prompt/chosen ----
-    items = []  # (record_meta, prompt_msgs, chosen_msgs, prompt_text)
-    skipped = 0
-    with open(in_path, encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-            r = json.loads(line)
-            sc = split_prompt_chosen(r.get("messages", []))
-            if sc is None:
-                skipped += 1
-                continue
-            prompt_msgs, chosen_msgs = sc
-            items.append((r, prompt_msgs, chosen_msgs, build_prompt_text(tokenizer, prompt_msgs)))
-    if args.limit:
-        items = items[: args.limit]
-    print(f"[gen] {len(items)} records ({skipped} skipped); batch_size={args.batch_size}")
+    from tqdm import tqdm
+    print(f"[gen] {len(items)} remaining records ({skipped} skipped); batch_size={args.batch_size}")
 
     n_written = 0
-    with open(out_path, "w", encoding="utf-8") as out_f:
-        for start in range(0, len(items), args.batch_size):
+    with open(out_path, "a", encoding="utf-8") as out_f:
+        for start in tqdm(range(0, len(items), args.batch_size),
+                          desc="rejected", unit="batch"):
             batch = items[start:start + args.batch_size]
-            texts = [b[3] for b in batch]
+            texts = [build_prompt_text(tokenizer, prompt_msgs) for (_, prompt_msgs, _) in batch]
             enc = tokenizer(texts, return_tensors="pt", padding=True, truncation=True, max_length=2048).to(device)
             with torch.no_grad():
                 out = model.generate(
@@ -139,7 +178,7 @@ def main():
                 )
             gen = out[:, enc["input_ids"].shape[1]:]  # left-padded -> uniform slice point
             decoded = tokenizer.batch_decode(gen, skip_special_tokens=True)
-            for (rec, prompt_msgs, chosen_msgs, _), rej in zip(batch, decoded):
+            for (rec, prompt_msgs, chosen_msgs), rej in zip(batch, decoded):
                 triplet = {
                     "language": rec.get("language"),
                     "source": rec.get("source"),
@@ -149,9 +188,9 @@ def main():
                 }
                 out_f.write(json.dumps(triplet, ensure_ascii=False) + "\n")
                 n_written += 1
-            print(f"  {min(start + len(batch), len(items))}/{len(items)} done")
+            out_f.flush()  # persist each batch so a kill leaves a clean resume point
 
-    print(f"\n[done] wrote {n_written} DPO triplets -> {out_path}")
+    print(f"\n[done] wrote {n_written} new triplets ({done + n_written} total) -> {out_path}")
 
 
 if __name__ == "__main__":

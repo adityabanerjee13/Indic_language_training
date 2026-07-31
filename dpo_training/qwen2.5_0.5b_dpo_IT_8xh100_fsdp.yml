@@ -1,0 +1,149 @@
+# ==============================================================================
+# Axolotl DPO config — Qwen2.5-0.5B, full-parameter, 8x H100 with PyTorch FSDP.
+#
+# Scale-out variant of qwen2.5_0.5b_dpo_IT.yml (the 2x Ada / DDP config). Same
+# data, model, and DPO objective; the differences are all multi-GPU:
+#   * FSDP (FSDP2) full-shard across 8 ranks instead of DDP
+#   * Hopper (sm_90) precision: bf16 + tf32 + FlashAttention-2
+#   * larger per-step batch to use the 8x H100 (80GB each)
+#
+# Launch (8 processes, one per GPU; FSDP config below is read by accelerate):
+#   PYTHONPATH=. accelerate launch --num_processes 8 -m axolotl.cli.train qwen2.5_0.5b_dpo_IT_8xh100_fsdp.yml
+#   # torchrun --nproc_per_node 8 -m axolotl.cli.train <this file>   also works
+# ==============================================================================
+
+# --- Start from the SFT checkpoint (CPT -> SFT -> DPO) ------------------------
+base_model: adityabanerjee13/qwen2.5-0.5b-sft-IT
+model_type: AutoModelForCausalLM
+tokenizer_type: AutoTokenizer
+trust_remote_code: false
+
+# --- Full-parameter DPO: no LoRA/QLoRA adapter, no quantization ---------------
+adapter:
+load_in_8bit: false
+load_in_4bit: false
+
+# Per-source eval metrics (eval_<source>_loss + rewards/accuracies & margins).
+# Requires this folder on PYTHONPATH -> launch with PYTHONPATH=. (see header).
+plugins:
+  - multi_eval_plugin.MultiEvalPlugin
+
+# --- RL / DPO -----------------------------------------------------------------
+rl: dpo
+rl_beta: 0.1                 # DPO beta (KL strength vs. the frozen reference model)
+
+# --- Data: conversational preference triplets --------------------------------
+chat_template: tokenizer_default
+datasets:
+  - path: data/toxic_dpo_triplets_train.jsonl
+    ds_type: json
+    split: train
+    type: chat_template.default
+    field_prompt: prompt
+    field_chosen: chosen
+    field_rejected: rejected
+  - path: data/sft_source/indic_dpo_train.jsonl
+    ds_type: json
+    split: train
+    type: chat_template.default
+    field_prompt: prompt
+    field_chosen: chosen
+    field_rejected: rejected
+  - path: data/sft_source/tulu_dpo_train.jsonl
+    ds_type: json
+    split: train
+    type: chat_template.default
+    field_prompt: prompt
+    field_chosen: chosen
+    field_rejected: rejected
+
+# Held-out preference val (Toxic + Indic + Tulu), logged as eval during training.
+test_datasets:
+  - path: data/toxic_dpo_triplets_val.jsonl
+    ds_type: json
+    split: train
+    type: chat_template.default
+    field_prompt: prompt
+    field_chosen: chosen
+    field_rejected: rejected
+  - path: data/sft_source/indic_dpo_val.jsonl
+    ds_type: json
+    split: train
+    type: chat_template.default
+    field_prompt: prompt
+    field_chosen: chosen
+    field_rejected: rejected
+  - path: data/sft_source/tulu_dpo_val.jsonl
+    ds_type: json
+    split: train
+    type: chat_template.default
+    field_prompt: prompt
+    field_chosen: chosen
+    field_rejected: rejected
+
+dataset_prepared_path: ./last_run_prepared_dpo
+dataset_num_proc: 8          # more CPU workers for tokenize on a big node
+val_set_size: 0
+output_dir: ./outputs/qwen2.5-0.5b-dpo-IT-8xh100
+
+# --- Sequence length ----------------------------------------------------------
+sequence_len: 4096           # DPO holds prompt+chosen AND prompt+rejected
+sample_packing: false        # packing is NOT supported for DPO
+pad_to_sequence_len: true
+
+# --- Optimization -------------------------------------------------------------
+# Effective batch = micro_batch_size x grad_accum x num_gpus = 16 x 1 x 8 = 128.
+# That's ~4x the 2-GPU config's 32; the LR is nudged up accordingly (~sqrt scale).
+gradient_accumulation_steps: 1
+micro_batch_size: 16         # 80GB H100 has plenty of room for a 0.5B DPO run
+num_epochs: 1
+optimizer: adamw_torch_fused
+lr_scheduler: cosine
+learning_rate: 1e-5          # scaled up from 5e-6 for the 4x larger batch
+warmup_ratio: 0.1
+weight_decay: 0.0
+max_grad_norm: 1.0
+
+group_by_length: false
+
+# --- Precision / memory (H100 = sm_90: bf16 + tf32 + FlashAttention-2) --------
+bf16: true
+fp16: false
+tf32: true
+gradient_checkpointing: true
+flash_attention: true
+
+# --- Multi-GPU: PyTorch FSDP (FSDP2) full-shard across 8x H100 ----------------
+# H100 SXM nodes have NVLink/NVSwitch, so FSDP's per-layer all-gathers are cheap
+# -> full sharding of params/grads/optimizer is efficient here (unlike the
+# NVLink-less Ada box, where DDP won). Each rank still trains on its own data
+# shard = data parallelism, with the model sharded across ranks.
+fsdp_version: 2
+fsdp_config:
+  offload_params: false
+  cpu_ram_efficient_loading: true
+  auto_wrap_policy: TRANSFORMER_BASED_WRAP
+  transformer_layer_cls_to_wrap: Qwen2DecoderLayer
+  state_dict_type: FULL_STATE_DICT      # consolidated checkpoints for HF/hub save
+  reshard_after_forward: true           # FULL_SHARD (max memory saving). Set false
+                                        # for SHARD_GRAD_OP (ZeRO-2, less comm) if
+                                        # you want more speed on this tiny model.
+  sync_module_states: true
+
+# --- Logging / checkpoints ----------------------------------------------------
+logging_steps: 10
+save_strategy: steps
+save_steps: 200
+save_total_limit: 20
+save_only_model: true
+evals_per_epoch: 4
+
+wandb_project: indic-dpo
+wandb_entity: models-na9841
+wandb_name: qwen2.5-0.5b-dpo-IT-8xh100-fsdp
+wandb_log_model: "false"
+
+hub_model_id: adityabanerjee13/qwen2.5-0.5b-dpo-IT-8xh100
+hub_strategy: end
+
+special_tokens:

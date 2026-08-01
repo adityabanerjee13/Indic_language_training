@@ -39,21 +39,21 @@ datasets:
     ds_type: json
     split: train
     type: chat_template.default
-    field_prompt: prompt
+    field_messages: prompt
     field_chosen: chosen
     field_rejected: rejected
   - path: data/sft_source/indic_dpo_train.jsonl
     ds_type: json
     split: train
     type: chat_template.default
-    field_prompt: prompt
+    field_messages: prompt
     field_chosen: chosen
     field_rejected: rejected
   - path: data/sft_source/tulu_dpo_train.jsonl
     ds_type: json
     split: train
     type: chat_template.default
-    field_prompt: prompt
+    field_messages: prompt
     field_chosen: chosen
     field_rejected: rejected
 
@@ -63,21 +63,21 @@ test_datasets:
     ds_type: json
     split: train
     type: chat_template.default
-    field_prompt: prompt
+    field_messages: prompt
     field_chosen: chosen
     field_rejected: rejected
   - path: data/sft_source/indic_dpo_val.jsonl
     ds_type: json
     split: train
     type: chat_template.default
-    field_prompt: prompt
+    field_messages: prompt
     field_chosen: chosen
     field_rejected: rejected
   - path: data/sft_source/tulu_dpo_val.jsonl
     ds_type: json
     split: train
     type: chat_template.default
-    field_prompt: prompt
+    field_messages: prompt
     field_chosen: chosen
     field_rejected: rejected
 
@@ -94,8 +94,13 @@ pad_to_sequence_len: true
 # --- Optimization -------------------------------------------------------------
 # Effective batch = micro_batch_size x grad_accum x num_gpus = 16 x 1 x 8 = 128.
 # That's ~4x the 2-GPU config's 32; the LR is nudged up accordingly (~sqrt scale).
-gradient_accumulation_steps: 1
-micro_batch_size: 16         # 80GB H100 has plenty of room for a 0.5B DPO run
+# See the long logits-memory note in qwen2.5_0.5b_dpo_IT.yml. Budget per H100 is
+# 80GB instead of 48GB, so micro_batch_size 4 (8 concatenated sequences ->
+# 2 x 8 x 2.32 = 37.1 GiB peak, + ~4.5 GiB fixed) fits; 16 would need 148 GiB.
+# grad_accum 4 holds the effective batch at 4 x 4 x 8 GPUs = 128, as before.
+gradient_accumulation_steps: 4   # effective batch = 4 x 4 x 8 GPUs = 128
+micro_batch_size: 4
+eval_batch_size: 2
 num_epochs: 1
 optimizer: adamw_torch_fused
 lr_scheduler: cosine

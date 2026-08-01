@@ -43,58 +43,71 @@ plugins:
 # --- RL / DPO -----------------------------------------------------------------
 rl: dpo
 rl_beta: 0.1                 # DPO beta (KL strength vs. the frozen reference model)
+
+# Liger's fused linear DPO loss never materializes the (batch, seq, 151936)
+# logits tensor at all -- it fuses the lm_head matmul into the loss. That is the
+# one change that makes 4096-token DPO on a 152k-vocab model comfortable on a
+# 48GB card, and it would let micro_batch_size go back to 8.
+# Enable it if the venv has liger-kernel:  pip list | grep liger
+# dpo_use_liger_kernel: true
 # The reference model defaults to a frozen copy of base_model — correct here,
 # since base_model IS the SFT policy we want to prefer-tune.
 
 # --- Data: conversational preference triplets --------------------------------
-# `chat_template.default` renders `prompt` with the chat template and treats
-# `chosen`/`rejected` as the competing assistant completions. field_* map our
-# column names (they already are the defaults, but kept explicit).
+# `chat_template.default` renders the conversation history with the chat template
+# (add_generation_prompt=True) and treats `chosen`/`rejected` as the competing
+# assistant completions; for list-valued chosen/rejected it takes the LAST turn.
+#
+# NOTE: the history column is `field_messages` (default "messages"), NOT
+# `field_prompt` -- there is no such key in Axolotl's DPODataset schema, and
+# pydantic silently ignores unknown keys, so a `field_prompt:` line is a no-op
+# and you get `KeyError: 'messages'` deep inside a multiprocess map. Our column
+# happens to be named `prompt`, hence `field_messages: prompt`.
 chat_template: tokenizer_default   # use the SFT model's own Qwen2.5 template
 datasets:
-  - path: data/toxic_dpo_triplets_train.jsonl
+  - path: data/toxic_dpo_triplets_train_30pct.jsonl
     ds_type: json
     split: train
     type: chat_template.default
-    field_prompt: prompt
+    field_messages: prompt
     field_chosen: chosen
     field_rejected: rejected
-  - path: data/sft_source/indic_dpo_train.jsonl
+  - path: data/indic_dpo_train.jsonl
     ds_type: json
     split: train
     type: chat_template.default
-    field_prompt: prompt
+    field_messages: prompt
     field_chosen: chosen
     field_rejected: rejected
-  - path: data/sft_source/tulu_dpo_train.jsonl
+  - path: data/tulu_dpo_train.jsonl
     ds_type: json
     split: train
     type: chat_template.default
-    field_prompt: prompt
+    field_messages: prompt
     field_chosen: chosen
     field_rejected: rejected
 
 # Held-out preference val (Toxic + Indic + Tulu), logged as eval during training.
 test_datasets:
-  - path: data/toxic_dpo_triplets_val.jsonl
+  - path: data/toxic_dpo_triplets_val_30pct.jsonl
     ds_type: json
     split: train
     type: chat_template.default
-    field_prompt: prompt
+    field_messages: prompt
     field_chosen: chosen
     field_rejected: rejected
-  - path: data/sft_source/indic_dpo_val.jsonl
+  - path: data/indic_dpo_val.jsonl
     ds_type: json
     split: train
     type: chat_template.default
-    field_prompt: prompt
+    field_messages: prompt
     field_chosen: chosen
     field_rejected: rejected
-  - path: data/sft_source/tulu_dpo_val.jsonl
+  - path: data/tulu_dpo_val.jsonl
     ds_type: json
     split: train
     type: chat_template.default
-    field_prompt: prompt
+    field_messages: prompt
     field_chosen: chosen
     field_rejected: rejected
 
@@ -104,14 +117,43 @@ val_set_size: 0              # use test_datasets above instead of an auto split
 output_dir: ./outputs/qwen2.5-0.5b-dpo-IT
 
 # --- Sequence length ----------------------------------------------------------
-sequence_len: 4096           # DPO holds prompt+chosen AND prompt+rejected -> ~2x
-                             # memory vs SFT. Drop to 2048 if you hit OOM.
+# Measured tokenized lengths of max(prompt+chosen, prompt+rejected) over all
+# 41,120 triplets, with this model's own chat template:
+#     seq_len   truncated   |  per-file p90:  indic 7391   toxic 1391   tulu 1360
+#        1024     36.8%     |  per-file max:  indic 29528  toxic 12553  tulu 112961
+#        2048      9.1%
+#        4096      3.9%
+# Truncation is worse for DPO than for SFT: cutting a completion mid-way corrupts
+# the preference pair rather than just shortening it. 4096 keeps that at 3.9%.
+# Prefer fixing memory via micro_batch_size / liger below, NOT by dropping this.
+sequence_len: 4096
 sample_packing: false        # packing is NOT supported for DPO
-pad_to_sequence_len: true
+pad_to_sequence_len: true    # no-op for DPO -- TRL pads to the longest sequence
+                             # in each batch, which is why peak memory varies
+                             # step to step and the first OOM came late.
 
 # --- Optimization (DPO: lower LR, usually 1 epoch) ---------------------------
-gradient_accumulation_steps: 2   # effective batch = 8 x 2 x 2 GPUs = 32
-micro_batch_size: 8              # 48GB Ada has ample headroom for a 0.5B DPO run
+# Batch sizes here are set by LOGITS memory, not by model size. The 0.5B model +
+# optimizer + activations is only ~4.5 GiB; everything else is the logits tensor.
+#
+#   one sequence at 4096 tok = 4095 x 151,936 vocab x 4 B (fp32) = 2.32 GiB
+#
+# fp32, not bf16 -- transformers upcasts logits before the loss. DPO concatenates
+# chosen+rejected, so micro_batch_size N is 2N sequences, and axolotl's
+# selective_log_softmax hits a non-contiguous slice (logits[:, :-1]), so .view()
+# raises and it falls back to .reshape(-1, V).contiguous() -- a second full copy.
+# Peak is therefore 2 x 2N x 2.32 GiB:
+#
+#     micro_batch_size 8  ->  74.2 GiB   OOMs a 48GB card (and an 80GB one)
+#     micro_batch_size 4  ->  37.1 GiB   too tight once the ref model's pass lands
+#     micro_batch_size 2  ->  18.5 GiB   + ~4.5 GiB fixed = ~23 GiB  OK
+#
+# grad_accum 8 keeps the effective batch at 2 x 8 x 2 GPUs = 32, unchanged from
+# the old 8 x 2 x 2 -- accumulation is free memory-wise, so throughput is the
+# only cost. See dpo_use_liger_kernel in the RL section above to get it back.
+gradient_accumulation_steps: 8   # effective batch = 2 x 8 x 2 GPUs = 32
+micro_batch_size: 2
+eval_batch_size: 1               # eval runs before step 1, so it OOMs first
 num_epochs: 1
 optimizer: adamw_torch_fused
 lr_scheduler: cosine

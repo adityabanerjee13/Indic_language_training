@@ -30,7 +30,7 @@ The module must be importable — run via `python -m axolotl.cli.train <cfg>` fr
 this folder, or `PYTHONPATH=. accelerate launch -m axolotl.cli.train <cfg>`.
 
 Each `test_datasets` entry is the same conversational preference format the DPO
-`datasets` use: columns prompt / chosen / rejected (remapped from field_prompt /
+`datasets` use: columns prompt / chosen / rejected (remapped from field_messages /
 field_chosen / field_rejected if those are set).
 """
 
@@ -64,10 +64,14 @@ def _load_entry(entry):
 
 
 def _standardize_columns(ds, entry):
-    """Rename field_prompt/field_chosen/field_rejected -> prompt/chosen/rejected
-    and drop everything else (e.g. language/source metadata)."""
+    """Rename field_messages/field_chosen/field_rejected -> prompt/chosen/rejected
+    and drop everything else (e.g. language/source metadata).
+
+    Axolotl names the conversation-history column `field_messages` (there is no
+    `field_prompt` in its DPODataset schema); `field_prompt` is accepted here
+    only as a fallback for older configs."""
     wanted = {
-        "prompt": entry.get("field_prompt", "prompt"),
+        "prompt": entry.get("field_messages") or entry.get("field_prompt", "prompt"),
         "chosen": entry.get("field_chosen", "chosen"),
         "rejected": entry.get("field_rejected", "rejected"),
     }

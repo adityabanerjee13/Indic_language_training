@@ -1,0 +1,142 @@
+{
+  "results": {
+    "ifeval": {
+      "name": "ifeval",
+      "alias": "ifeval",
+      "sample_len": 541,
+      "prompt_level_strict_acc,none": 0.15711645101663585,
+      "prompt_level_strict_acc_stderr,none": 0.01566021568347361,
+      "inst_level_strict_acc,none": 0.27577937649880097,
+      "inst_level_strict_acc_stderr,none": "N/A",
+      "prompt_level_loose_acc,none": 0.18114602587800369,
+      "prompt_level_loose_acc_stderr,none": 0.01657374894371447,
+      "inst_level_loose_acc,none": 0.30455635491606714,
+      "inst_level_loose_acc_stderr,none": "N/A"
+    }
+  },
+  "group_subtasks": {},
+  "configs": {
+    "ifeval": {
+      "task": "ifeval",
+      "dataset_path": "google/IFEval",
+      "test_split": "train",
+      "doc_to_text": "prompt",
+      "doc_to_target": 0,
+      "unsafe_code": false,
+      "process_results": "def process_results(doc, results):\n    inp = InputExample(\n        key=doc[\"key\"],\n        instruction_id_list=doc[\"instruction_id_list\"],\n        prompt=doc[\"prompt\"],\n        kwargs=doc[\"kwargs\"],\n    )\n    response = results[0]\n\n    out_strict = test_instruction_following_strict(inp, response)\n    out_loose = test_instruction_following_loose(inp, response)\n\n    return {\n        \"prompt_level_strict_acc\": out_strict.follow_all_instructions,\n        \"inst_level_strict_acc\": out_strict.follow_instruction_list,\n        \"prompt_level_loose_acc\": out_loose.follow_all_instructions,\n        \"inst_level_loose_acc\": out_loose.follow_instruction_list,\n    }\n",
+      "description": "",
+      "target_delimiter": " ",
+      "fewshot_delimiter": "\n\n",
+      "fewshot_config": {
+        "sampler": "default",
+        "split": null,
+        "process_docs": null,
+        "fewshot_indices": null,
+        "samples": null,
+        "doc_to_text": "prompt",
+        "doc_to_choice": null,
+        "doc_to_target": 0,
+        "gen_prefix": null,
+        "fewshot_delimiter": "\n\n",
+        "target_delimiter": " "
+      },
+      "num_fewshot": 0,
+      "metric_list": [
+        {
+          "metric": "prompt_level_strict_acc",
+          "aggregation": "mean",
+          "higher_is_better": true
+        },
+        {
+          "metric": "inst_level_strict_acc",
+          "aggregation": "def agg_inst_level_acc(items):\n    flat_items = [item for sublist in items for item in sublist]\n    inst_level_acc = sum(flat_items) / len(flat_items)\n    return inst_level_acc\n",
+          "higher_is_better": true
+        },
+        {
+          "metric": "prompt_level_loose_acc",
+          "aggregation": "mean",
+          "higher_is_better": true
+        },
+        {
+          "metric": "inst_level_loose_acc",
+          "aggregation": "def agg_inst_level_acc(items):\n    flat_items = [item for sublist in items for item in sublist]\n    inst_level_acc = sum(flat_items) / len(flat_items)\n    return inst_level_acc\n",
+          "higher_is_better": true
+        }
+      ],
+      "output_type": "generate_until",
+      "generation_kwargs": {
+        "until": [],
+        "do_sample": false,
+        "temperature": 0.0,
+        "max_gen_toks": 512
+      },
+      "repeats": 1,
+      "should_decontaminate": false,
+      "metadata": {
+        "version": 4.0,
+        "config_source": "C:\\Users\\Aditya Banerjee\\AppData\\Roaming\\Python\\Python313\\site-packages\\lm_eval\\tasks\\ifeval\\ifeval.yaml"
+      }
+    }
+  },
+  "versions": {
+    "ifeval": 4.0
+  },
+  "n-shot": {
+    "ifeval": 0
+  },
+  "higher_is_better": {
+    "ifeval": {
+      "prompt_level_strict_acc": true,
+      "inst_level_strict_acc": true,
+      "prompt_level_loose_acc": true,
+      "inst_level_loose_acc": true
+    }
+  },
+  "n-samples": {
+    "ifeval": {
+      "original": 541,
+      "effective": 541
+    }
+  },
+  "config": {
+    "model": "adityabanerjee13/qwen2.5-0.5b-sft-I",
+    "model_args": null,
+    "model_num_parameters": 494032768,
+    "model_dtype": "torch.bfloat16",
+    "model_revision": "main",
+    "model_sha": "56f49423e17ff212a7dbf1e7ab36b9ac4d4aa305",
+    "batch_size": null,
+    "batch_sizes": [],
+    "device": null,
+    "use_cache": null,
+    "limit": null,
+    "bootstrap_iters": 100000,
+    "gen_kwargs": {
+      "max_gen_toks": 512
+    },
+    "random_seed": 42,
+    "numpy_seed": 42,
+    "torch_seed": 42,
+    "fewshot_seed": 1234
+  },
+  "git_hash": "326824b",
+  "date": 1785655371.5933423,
+  "pretty_env_info": "PyTorch version: 2.13.0+xpu\nIs debug build: False\nCUDA used to build PyTorch: None\nROCM used to build PyTorch: N/A\n\nOS: Microsoft Windows 11 Home Single Language (10.0.26200 64-bit)\nGCC version: Could not collect\nClang version: Could not collect\nCMake version: Could not collect\nLibc version: N/A\n\nPython version: 3.13.7 (tags/v3.13.7:bcee1c3, Aug 14 2025, 14:15:11) [MSC v.1944 64 bit (AMD64)] (64-bit runtime)\nPython platform: Windows-11-10.0.26200-SP0\nIs CUDA available: False\nCUDA runtime version: No CUDA\nCUDA_MODULE_LOADING set to: N/A\nGPU models and configuration: No CUDA\nNvidia driver version: No CUDA\ncuDNN version: No CUDA\nIs XPU available: True\nXPU used to build PyTorch: 20260000\nIntel GPU driver version:\n* 32.0.101.8243 (20251013000000.******+***)\nIntel GPU models onboard:\n* Intel(R) Arc(TM) 140T GPU (16GB)\nIntel GPU models detected:\n* [0] _XpuDeviceProperties(name='Intel(R) Arc(TM) 140T GPU (16GB)', platform_name='Intel(R) oneAPI Unified Runtime over Level-Zero', type='gpu', device_id=0x7D51, uuid=8680517d-0300-0000-0002-000000000000, driver_version='1.13.35227', total_memory=16831MB, local_mem_size=64KB, last_level_cache_size=8192KB, max_compute_units=128, memory_clock_rate=0MHz, memory_bus_width=64-bit, gpu_eu_count=128, gpu_subslice_count=16, max_work_group_size=1024, max_num_sub_groups=128, sub_group_sizes=[8 16 32], has_fp16=1, has_fp64=1, has_atomic64=1, is_integrated_gpu=1)\nHIP runtime version: N/A\nMIOpen runtime version: N/A\nIs XNNPACK available: False\nCaching allocator config: N/A\n\nCPU:\nName: Intel(R) Core(TM) Ultra 9 285H\nManufacturer: GenuineIntel\nFamily: 775\nArchitecture: 9\nProcessorType: 3\nDeviceID: CPU0\nCurrentClockSpeed: 2900\nMaxClockSpeed: 2900\nL2CacheSize: 28672\nL2CacheSpeed: None\nRevision: None\n\nVersions of relevant libraries:\n[pip3] dpcpp-cpp-rt==2026.0.0\n[pip3] intel-cmplr-lib-rt==2026.0.0\n[pip3] intel-cmplr-lib-ur==2026.0.0\n[pip3] intel-cmplr-lic-rt==2026.0.0\n[pip3] intel-opencl-rt==2026.0.0\n[pip3] intel-openmp==2026.0.0\n[pip3] intel-pti==0.17.0\n[pip3] intel-sycl-rt==2026.0.0\n[pip3] mkl==2026.0.0\n[pip3] mypy_extensions==1.1.0\n[pip3] numpy==2.5.1\n[pip3] onemkl-license==2026.0.0\n[pip3] onemkl-sycl-blas==2026.0.0\n[pip3] onemkl-sycl-dft==2026.0.0\n[pip3] onemkl-sycl-lapack==2026.0.0\n[pip3] onemkl-sycl-rng==2026.0.0\n[pip3] onemkl-sycl-sparse==2026.0.0\n[pip3] onnx==1.19.0\n[pip3] onnxruntime==1.23.1\n[pip3] tbb==2023.0.0\n[pip3] tcmlib==1.5.0\n[pip3] torch==2.13.0+xpu\n[pip3] torchvision==0.28.0+xpu\n[pip3] triton-xpu==3.7.2\n[pip3] umf==1.1.0\n[conda] libblas                               3.9.0                  35_h5709861_mkl        conda-forge\n[conda] libcblas                              3.9.0                  35_h2a3cdd5_mkl        conda-forge\n[conda] liblapack                             3.9.0                  35_hf9ab0e9_mkl        conda-forge\n[conda] mkl                                   2024.2.2               h57928b3_16            conda-forge\n[conda] numpy                                 2.2.6                  pypi_0                 pypi\n[conda] tbb                                   2021.13.0              h18a62a1_3             conda-forge",
+  "transformers_version": "5.14.1",
+  "lm_eval_version": "0.4.12",
+  "upper_git_hash": null,
+  "tokenizer_pad_token": [
+    "<|endoftext|>",
+    "151643"
+  ],
+  "tokenizer_eos_token": [
+    "<|endoftext|>",
+    "151643"
+  ],
+  "tokenizer_bos_token": [
+    null,
+    "None"
+  ],
+  "eot_token_id": 151643,
+  "max_length": 32768
+}

@@ -11,16 +11,31 @@ and registered), this loads the Hugging Face checkpoint directly with
 Reusing the same task logic keeps scores directly comparable to whatever
 baseline you already have under qwen_benchmark_results/.
 
-Note: the checkpoint here is a *base* (non-instruct) CPT model, so it is
-being evaluated zero-shot on raw completion prompts exactly like the Ollama
-baseline was (Ollama's /api/generate also bypasses any chat template) - no
-chat formatting is applied on either side.
+Two prompt envelopes, selected with --chat / --no-chat (default: completion):
+
+  completion (default) - the task template is fed as raw text and the model
+      continues it. Correct for *base*/CPT checkpoints (Qwen2.5-0.5B, the
+      *-cpt-* models, sarvam-1), and it matches the Ollama baseline, whose
+      /api/generate also bypasses any chat template.
+  --chat ("SFT format") - the task template is wrapped as a single user
+      message through `tokenizer.apply_chat_template(..., add_generation_prompt=
+      True)`, i.e. the Qwen2.5 ChatML rendering the SFT/DPO data was built with
+      (see data/cap_and_rebalance.py:74, dpo_training/generate_all_rejected.py:143).
+      Required for the instruction-tuned checkpoints (*-sft-IT, *-dpo-IT*):
+      fed a bare completion prompt they are being run off-distribution.
+      Chat mode also adds <|im_end|> as a stop token - Qwen2.5's `eos_token` is
+      <|endoftext|>, but an SFT-trained turn ends at <|im_end|>, so without it
+      generation runs on past the answer into a hallucinated next turn.
+
+The task templates, sample, and metrics are identical in both modes, so only
+the envelope differs and base-vs-SFT deltas stay comparable.
 
 Requires: transformers, torch, sacrebleu (see requirements.txt)
 
 Usage:
     python run_qwen_ft_benchmark.py
     python run_qwen_ft_benchmark.py --model adityabanerjee13/qwen2.5-0.5b-indic-cpt
+    python run_qwen_ft_benchmark.py --model adityabanerjee13/qwen2.5-0.5b-sft-IT --chat
     python run_qwen_ft_benchmark.py --num-examples 50 --tasks xquad_in flores_in
     python run_qwen_ft_benchmark.py --langs hi bn ta --device cpu
 """
@@ -52,6 +67,13 @@ from metrics import run_benchmark  # noqa: E402
 DEFAULT_MODEL = "sarvamai/sarvam-1"
 DEFAULT_OUTPUT_DIR = os.path.join(ROOT, "qwen_ft_benchmark_results")
 DEFAULT_BATCH = 128  # prompts per forward pass (higher = faster, more memory)
+
+# Set once in main(). When True every task prompt is wrapped in the model's own
+# chat template before generation ("SFT format" - see the module docstring). A
+# global rather than a 5th positional arg threaded through all four task
+# runners, which never need to know about it: the envelope is a property of the
+# checkpoint, not of the task.
+CHAT_MODE = False
 
 def _load_tokenizer(model_id: str):
     """Load the tokenizer, self-healing a corrupted tokenizer_config.json.
@@ -119,6 +141,41 @@ def _load_tokenizer(model_id: str):
     return AutoTokenizer.from_pretrained(fixed_dir)
 
 
+def render_prompts(tokenizer, prompts: list) -> list:
+    """Wrap each raw task prompt in the SFT/ChatML envelope, if --chat is on.
+
+    One user turn per prompt plus the generation prompt, exactly how the SFT
+    and DPO training text was rendered. In completion mode this is a no-op.
+    """
+    if not CHAT_MODE:
+        return prompts
+    return [
+        tokenizer.apply_chat_template(
+            [{"role": "user", "content": prompt}],
+            tokenize=False,
+            add_generation_prompt=True,
+        )
+        for prompt in prompts
+    ]
+
+
+def stop_token_ids(tokenizer) -> list:
+    """Token ids that end a generation.
+
+    Qwen2.5's eos_token is <|endoftext|>, but an SFT-formatted assistant turn
+    terminates with <|im_end|>, which is *not* the eos token on these
+    checkpoints. Without it in chat mode the model sails past its answer and
+    starts a fresh <|im_start|>user turn, which then gets decoded into the
+    prediction.
+    """
+    ids = [tokenizer.eos_token_id]
+    if CHAT_MODE:
+        im_end = tokenizer.convert_tokens_to_ids("<|im_end|>")
+        if im_end is not None and im_end != tokenizer.unk_token_id and im_end not in ids:
+            ids.append(im_end)
+    return ids
+
+
 def load_model(model_id: str, device: str, dtype: str):
     from transformers import AutoModelForCausalLM
 
@@ -144,6 +201,7 @@ def load_model(model_id: str, device: str, dtype: str):
 def generate(model, tokenizer, device: str, prompt: str, max_new_tokens: int) -> str:
     import torch
 
+    prompt = render_prompts(tokenizer, [prompt])[0]
     inputs = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=3072).to(device)
     with torch.no_grad():
         output_ids = model.generate(
@@ -151,7 +209,7 @@ def generate(model, tokenizer, device: str, prompt: str, max_new_tokens: int) ->
             max_new_tokens=max_new_tokens,
             do_sample=False,
             pad_token_id=tokenizer.pad_token_id,
-            eos_token_id=tokenizer.eos_token_id,
+            eos_token_id=stop_token_ids(tokenizer),
         )
     new_tokens = output_ids[0][inputs["input_ids"].shape[-1]:]
     return tokenizer.decode(new_tokens, skip_special_tokens=True).strip()
@@ -168,6 +226,8 @@ def generate_batch(model, tokenizer, device: str, prompts: list, max_new_tokens:
     import torch
 
     outputs = []
+    prompts = render_prompts(tokenizer, prompts)
+    eos_ids = stop_token_ids(tokenizer)
     for start in range(0, len(prompts), batch_size):
         chunk = prompts[start:start + batch_size]
         inputs = tokenizer(
@@ -179,7 +239,7 @@ def generate_batch(model, tokenizer, device: str, prompts: list, max_new_tokens:
                 max_new_tokens=max_new_tokens,
                 do_sample=False,
                 pad_token_id=tokenizer.pad_token_id,
-                eos_token_id=tokenizer.eos_token_id,
+                eos_token_id=eos_ids,
             )
         new_tokens = output_ids[:, inputs["input_ids"].shape[-1]:]
         outputs.extend(
@@ -322,6 +382,9 @@ def main() -> None:
     parser.add_argument("--model", default=DEFAULT_MODEL, help="HF repo id or local path of the fine-tuned checkpoint.")
     parser.add_argument("--device", default=None, help="cuda / xpu / cpu (default: cuda > xpu > cpu, whichever is available)")
     parser.add_argument("--dtype", default="bf16", choices=["bf16", "fp16", "fp32"])
+    parser.add_argument("--chat", dest="chat", action="store_true", help="Wrap every prompt in the model's chat template (SFT format). Use for instruction-tuned checkpoints (*-sft-IT, *-dpo-IT*).")
+    parser.add_argument("--no-chat", dest="chat", action="store_false", help="Feed raw completion prompts (default; correct for base/CPT checkpoints).")
+    parser.set_defaults(chat=False)
     parser.add_argument("--batch-size", type=int, default=DEFAULT_BATCH, help="Prompts generated together per forward pass (higher = faster, more memory).")
     parser.add_argument("--num-examples", type=int, default=20, help="Sampled examples per task/language (per direction for flores)")
     parser.add_argument("--seed", type=int, default=42)
@@ -329,6 +392,9 @@ def main() -> None:
     parser.add_argument("--langs", nargs="*", default=LANGS, choices=LANGS)
     parser.add_argument("--output-dir", default=DEFAULT_OUTPUT_DIR)
     args = parser.parse_args()
+
+    global CHAT_MODE
+    CHAT_MODE = args.chat
 
     import torch
 
@@ -345,13 +411,37 @@ def main() -> None:
 
     model, tokenizer = load_model(args.model, device, args.dtype)
 
+    if CHAT_MODE:
+        # A null chat_template would make --chat a silent no-op: apply_chat_template
+        # would fall back to a default (or raise), and we'd be re-measuring the
+        # completion path while believing we ran SFT format. Fail loudly instead.
+        if not getattr(tokenizer, "chat_template", None):
+            raise SystemExit(
+                f"--chat was requested but {args.model} has no chat_template in its "
+                "tokenizer config. Copy one from Qwen/Qwen2.5-0.5B-Instruct before rerunning."
+            )
+        print("Prompt envelope: SFT format (chat template + generation prompt).")
+        print("  example rendered prompt:")
+        print("  " + repr(render_prompts(tokenizer, ["<PROMPT>"])[0]))
+    else:
+        print("Prompt envelope: raw completion (no chat template).")
+
     try:
         # Save each run into its own subfolder so runs don't overwrite each other:
         # <output-dir>/<model-name>_<timestamp>/
-        run_name = f"{os.path.basename(args.model.rstrip('/'))}_{time.strftime('%Y%m%d-%H%M%S')}"
+        # The envelope goes in the folder name too: a chat run and a completion
+        # run of the same checkpoint are different measurements, not reruns.
+        envelope = "chat" if CHAT_MODE else "completion"
+        run_name = (
+            f"{os.path.basename(args.model.rstrip('/'))}_{envelope}_"
+            f"{time.strftime('%Y%m%d-%H%M%S')}"
+        )
         output_dir = os.path.join(args.output_dir, run_name)
         os.makedirs(output_dir, exist_ok=True)
         print(f"Saving results to {output_dir}")
+
+        with open(os.path.join(output_dir, "run_config.json"), "w", encoding="utf-8") as f:
+            json.dump({**vars(args), "device": device, "envelope": envelope}, f, indent=2)
 
         all_scores = {}
         for task in args.tasks:

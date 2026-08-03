@@ -1,0 +1,86 @@
+base_model: adityabanerjee13/qwen2.5-0.5b-cpt-mix-1to2
+model_type: AutoModelForCausalLM
+tokenizer_type: AutoTokenizer
+trust_remote_code: false
+
+adapter:
+load_in_8bit: false
+load_in_4bit: false
+
+plugins:
+  - multi_eval_plugin.MultiEvalPlugin
+
+chat_template: qwen_25
+
+datasets:
+  - path: adityabanerjee13/indic-sft-mini-train
+    type: chat_template
+    field_messages: messages
+    roles_to_train: ["assistant"]
+    split: train
+
+test_datasets:
+  - path: adityabanerjee13/indic-sft-mini-val
+    type: chat_template
+    field_messages: messages
+    roles_to_train: ["assistant"]
+    split: validation
+  - path: adityabanerjee13/tulu-sft-mini-val
+    type: chat_template
+    field_messages: messages
+    roles_to_train: ["assistant"]
+    split: validation
+
+dataset_prepared_path: ./last_run_prepared_sft_I
+dataset_num_proc: 1          # single-process tokenize: avoids fork deadlock
+val_set_size: 0
+output_dir: ./outputs/qwen2.5-0.5b-sft-I
+
+# --- Sequence packing -----------------------------------------------------
+sequence_len: 4096
+sample_packing: true
+pad_to_sequence_len: true
+eval_sample_packing: false
+
+# --- Optimization ----------------------------------------------------------
+gradient_accumulation_steps: 8
+micro_batch_size: 4
+num_epochs: 2
+optimizer: adamw_torch_fused
+lr_scheduler: cosine
+learning_rate: 2e-5
+warmup_ratio: 0.03
+weight_decay: 0.01
+max_grad_norm: 1.0
+
+# false = mask the user/system turns, compute loss on assistant turns only.
+# (`true` here would override roles_to_train and train on every token, i.e.
+# CPT-style — which is what the CPT configs this file was copied from wanted.)
+train_on_inputs: false
+group_by_length: false
+
+# --- Precision / memory ---------------------------------------------------
+bf16: auto
+fp16:
+tf32: true
+gradient_checkpointing: true
+flash_attention: true
+
+# --- Logging / checkpoints ------------------------------------------------
+logging_steps: 10
+save_strategy: steps
+save_steps: 500
+save_total_limit: 30
+save_only_model: true   # save weights only — no optimizer/scheduler state
+                        # (checkpoints ~1/3 the size; can't resume training)
+evals_per_epoch: 4
+
+wandb_project: indic-sft
+wandb_entity: models-na9841
+wandb_name: qwen2.5-0.5b-sft-I
+wandb_log_model: "false"
+
+hub_model_id: adityabanerjee13/qwen2.5-0.5b-sft-I
+hub_strategy: end
+
+special_tokens:

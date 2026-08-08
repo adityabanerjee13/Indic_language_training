@@ -1,0 +1,42 @@
+[
+  {
+    "model": "base",
+    "repo": "Qwen/Qwen2.5-0.5B",
+    "prompt": "01_news_cultural",
+    "temperature": 0.3,
+    "completion": " विभिन्न विद्यालयों ने लोक नृत्य की प्रस्तुति दी जिसमें विभिन्न विद्यालयों के छात्र-छात्राओं के लिए विभिन्न विद्यालयों के लिए विभिन्न व",
+    "prompt_tokens": 152,
+    "new_tokens": 128,
+    "seconds": 14.56
+  },
+  {
+    "model": "base",
+    "repo": "Qwen/Qwen2.5-0.5B",
+    "prompt": "02_admin_stats",
+    "temperature": 0.3,
+    "completion": " रवाना की शुरुआत सोमवार को की गई। जिला कलेक्टर ने हरी झंडी दिखाकर सफाई वाहनों को रवाना किया। अभियान के तहत जिले भर में सफाई कार्यक्रम की शुरुआत",
+    "prompt_tokens": 141,
+    "new_tokens": 128,
+    "seconds": 10.93
+  },
+  {
+    "model": "base",
+    "repo": "Qwen/Qwen2.5-0.5B",
+    "prompt": "03_explanatory",
+    "temperature": 0.3,
+    "completion": " आप अपने व्यवसाय को अपने विश्वास के लिए देखना चाहिए। अगर आप अपनी व्यवसाय को अपने विश्वास के लिए देखना चाहिए, तो आपको अपनी व्यवसाय के �",
+    "prompt_tokens": 83,
+    "new_tokens": 128,
+    "seconds": 11.98
+  },
+  {
+    "model": "base",
+    "repo": "Qwen/Qwen2.5-0.5B",
+    "prompt": "04_news_weather",
+    "temperature": 0.3,
+    "completion": " बारिश के चलते तापमान में गिरावट दर्ज की गई है। इस तरह के चलते तापमान में गिरावट दर्ज की गई है। इस तरह के चलते तापमान में गिरावट दर्ज की �",
+    "prompt_tokens": 110,
+    "new_tokens": 128,
+    "seconds": 11.1
+  }
+]

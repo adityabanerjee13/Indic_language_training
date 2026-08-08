@@ -1,0 +1,42 @@
+[
+  {
+    "model": "cpt-mix-1to2",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-cpt-mix-1to2",
+    "prompt": "01_news_cultural",
+    "temperature": 0.3,
+    "completion": " विभिन्न विद्यालयों ने लोक नृत्य की प्रस्तुति दी जाने के लिए अपनी विभागों के लिए लोक नृत्य की प्रस्तुति दी जाने की जानकारी दी है।",
+    "prompt_tokens": 152,
+    "new_tokens": 123,
+    "seconds": 15.72
+  },
+  {
+    "model": "cpt-mix-1to2",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-cpt-mix-1to2",
+    "prompt": "02_admin_stats",
+    "temperature": 0.3,
+    "completion": " रवाना की गई थी। जिला कलेक्टर ने जिले की रवाना की गई थी। जिला कलेक्टर ने जिले की रवाना की गई थी। जिला कलेक्टर ने जिले की रवाना की गई थी। ज",
+    "prompt_tokens": 141,
+    "new_tokens": 128,
+    "seconds": 12.57
+  },
+  {
+    "model": "cpt-mix-1to2",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-cpt-mix-1to2",
+    "prompt": "03_explanatory",
+    "temperature": 0.3,
+    "completion": " आप अपनी व्यवसाय को अपने विश्वास के लिए देखें। तो आपको अपनी व्यवसाय को अपने विश्वास के लिए देखें। यह अपनी व्यवसाय को अपने विश्वास के ल",
+    "prompt_tokens": 83,
+    "new_tokens": 128,
+    "seconds": 13.64
+  },
+  {
+    "model": "cpt-mix-1to2",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-cpt-mix-1to2",
+    "prompt": "04_news_weather",
+    "temperature": 0.3,
+    "completion": " बारिश के चलते तापमान में गिरावट दर्ज की गई है। इस तरह के बारिश के चलते तापमान में गिरावट दर्ज की गई है। इस तरह के बारिश के चलते तापमान मे�",
+    "prompt_tokens": 110,
+    "new_tokens": 128,
+    "seconds": 12.73
+  }
+]

@@ -1,0 +1,92 @@
+[
+  {
+    "model": "indic-cpt",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-indic-cpt",
+    "prompt": "01_factual",
+    "temperature": 0.1,
+    "completion": " ने दिल्ली के बाद बनाया था। दिल्ली के बाद भारत के राष्ट्रीय पशु ने दिल्ली के बाद बनाया था। भारत के राष्ट्रीय पशु ने दिल्ली के बाद बनाया था",
+    "prompt_tokens": 47,
+    "new_tokens": 128,
+    "seconds": 13.15
+  },
+  {
+    "model": "indic-cpt",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-indic-cpt",
+    "prompt": "01_factual",
+    "temperature": 0.35,
+    "completion": " राज्य के राज्य था। राज्य के नाम भारत बनाने के लिए नई दिल्ली का अधिकारी ने भारत के राज्य नाम बनाया। भारत की राजधानी नई दिल्ली के नाम बन",
+    "prompt_tokens": 47,
+    "new_tokens": 128,
+    "seconds": 8.91
+  },
+  {
+    "model": "indic-cpt",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-indic-cpt",
+    "prompt": "01_factual",
+    "temperature": 0.6,
+    "completion": " राज्य के राज्य था। राजधानी ने भारत के राज्य के तीन लोगों को राज्य की भावना करने की जिम्मेदारियों के साथ जांच लिया और अधिकारियों के साथ जिम",
+    "prompt_tokens": 47,
+    "new_tokens": 128,
+    "seconds": 9.85
+  },
+  {
+    "model": "indic-cpt",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-indic-cpt",
+    "prompt": "02_narrative",
+    "temperature": 0.1,
+    "completion": " रामू रोज़ की तरह अपने खेत की ओर जा रहा था। तब रामू रोज़ की तरह अपने खेत की ओर जा रहा था। तब रामू रोज़ की तरह अपने खेत की ओर जा �",
+    "prompt_tokens": 159,
+    "new_tokens": 128,
+    "seconds": 8.75
+  },
+  {
+    "model": "indic-cpt",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-indic-cpt",
+    "prompt": "02_narrative",
+    "temperature": 0.35,
+    "completion": " रामू रोज़ के दौरान बाजार में चले गया था। उसके बाद रामू रोज़ के दौरान चले गया था। उसके बाद रामू रोज़ के दौरान चले गया था। उ",
+    "prompt_tokens": 159,
+    "new_tokens": 128,
+    "seconds": 9.53
+  },
+  {
+    "model": "indic-cpt",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-indic-cpt",
+    "prompt": "02_narrative",
+    "temperature": 0.6,
+    "completion": " रामू भी अपने देश के लोगों को जोड़े जाने के बाद रामू भी अपने देश के लोगों को जोड़े जाने याद करते थे।",
+    "prompt_tokens": 159,
+    "new_tokens": 99,
+    "seconds": 7.23
+  },
+  {
+    "model": "indic-cpt",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-indic-cpt",
+    "prompt": "03_fewshot_translation",
+    "temperature": 0.1,
+    "completion": " यह बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार �",
+    "prompt_tokens": 104,
+    "new_tokens": 128,
+    "seconds": 8.89
+  },
+  {
+    "model": "indic-cpt",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-indic-cpt",
+    "prompt": "03_fewshot_translation",
+    "temperature": 0.35,
+    "completion": " यह आपली चीजें दिन बजे लगाई जाएगी।",
+    "prompt_tokens": 104,
+    "new_tokens": 35,
+    "seconds": 3.59
+  },
+  {
+    "model": "indic-cpt",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-indic-cpt",
+    "prompt": "03_fewshot_translation",
+    "temperature": 0.6,
+    "completion": " या आज भी अकेला जगह जगह जारी करेगा।",
+    "prompt_tokens": 104,
+    "new_tokens": 35,
+    "seconds": 2.58
+  }
+]

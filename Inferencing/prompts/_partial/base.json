@@ -1,0 +1,92 @@
+[
+  {
+    "model": "base",
+    "repo": "Qwen/Qwen2.5-0.5B",
+    "prompt": "01_factual",
+    "temperature": 0.1,
+    "completion": " नामक राजधानी है। भारत की राजधानी नई दिल्ली का राजधानी नामक राष्ट्रीय पशु नामक राजधानी है। भारत की राजधानी नई दिल्ली का राजधानी नामक र",
+    "prompt_tokens": 47,
+    "new_tokens": 128,
+    "seconds": 4.72
+  },
+  {
+    "model": "base",
+    "repo": "Qwen/Qwen2.5-0.5B",
+    "prompt": "01_factual",
+    "temperature": 0.35,
+    "completion": " राज्य है। भारत के राजधानी नई दिल्ली का देश भारत है। भारत के राजधानी नई दिल्ली के विभिन्न विश्वविद्यालयों को भारतीय विद्यालयों के रूप",
+    "prompt_tokens": 47,
+    "new_tokens": 128,
+    "seconds": 3.56
+  },
+  {
+    "model": "base",
+    "repo": "Qwen/Qwen2.5-0.5B",
+    "prompt": "01_factual",
+    "temperature": 0.6,
+    "completion": " राज्य है। भारत के राजधानी नई दिल्ली का पशु राज्य राष्ट्रीय अन्य भारत की राजधानी नई दिल्ली है। नई दिल्ली का पशु राज्य नई दिल्ली का पशु रा�",
+    "prompt_tokens": 47,
+    "new_tokens": 128,
+    "seconds": 3.52
+  },
+  {
+    "model": "base",
+    "repo": "Qwen/Qwen2.5-0.5B",
+    "prompt": "02_narrative",
+    "temperature": 0.1,
+    "completion": " रामू रोज़ की तरह अपने खेत की ओर जा रहा था, तभी रास्ते के किनारे उसे एक पुराना लकड़ी का संदूक पड़ा हुआ दिखाई दिया। रामू रोज़ की तरह",
+    "prompt_tokens": 159,
+    "new_tokens": 128,
+    "seconds": 3.89
+  },
+  {
+    "model": "base",
+    "repo": "Qwen/Qwen2.5-0.5B",
+    "prompt": "02_narrative",
+    "temperature": 0.35,
+    "completion": " रामू रोज़ के दिन के लिए एक गट चाल का दिखाई दिया। रामू रोज़ की तरह अपने खेत की ओर जा रहा था, तभी रास्ते के किनारे उसे एक पुराना लकड�",
+    "prompt_tokens": 159,
+    "new_tokens": 128,
+    "seconds": 3.55
+  },
+  {
+    "model": "base",
+    "repo": "Qwen/Qwen2.5-0.5B",
+    "prompt": "02_narrative",
+    "temperature": 0.6,
+    "completion": " रामू भी अपने देश के लोगों को उसे भी बेहतर तकनीक के लिए समझाने के बारे में जापान नहीं लगातार था। रामू भी अपने देश के लोगों को बेहतर तक",
+    "prompt_tokens": 159,
+    "new_tokens": 128,
+    "seconds": 3.53
+  },
+  {
+    "model": "base",
+    "repo": "Qwen/Qwen2.5-0.5B",
+    "prompt": "03_fewshot_translation",
+    "temperature": 0.1,
+    "completion": " यह बाद में बेस के बाद बेस के बाद बेस के बाद बेस के बाद बेस के बाद बेस के बाद बेस के बाद बेस के बाद बेस के बाद बेस के बाद बेस के बाद बेस के ब",
+    "prompt_tokens": 104,
+    "new_tokens": 128,
+    "seconds": 3.64
+  },
+  {
+    "model": "base",
+    "repo": "Qwen/Qwen2.5-0.5B",
+    "prompt": "03_fewshot_translation",
+    "temperature": 0.35,
+    "completion": " यह आपको बार बार चल रही है कि यह अपनी दिन बाहर नहीं होगी।\n\nEnglish: They are going to the zoo.\nHindi: उन्होंने विभिन्न विश्वविद्यालयों को खाली हैं।\n\nEnglish: He is a good student.\nHindi: यह",
+    "prompt_tokens": 104,
+    "new_tokens": 128,
+    "seconds": 8.43
+  },
+  {
+    "model": "base",
+    "repo": "Qwen/Qwen2.5-0.5B",
+    "prompt": "03_fewshot_translation",
+    "temperature": 0.6,
+    "completion": " यह आपको चलकर आपको बेचने के लिए आप अपने राष्ट्रपति ने तो अपने अमेरिकी के राष्ट्रपति को बेचने के लिए जाना था।\n\nEnglish: He is a well-known writer.\nHindi: एक वैशिष्ट्�",
+    "prompt_tokens": 104,
+    "new_tokens": 128,
+    "seconds": 9.27
+  }
+]

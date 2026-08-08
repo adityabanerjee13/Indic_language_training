@@ -1,0 +1,52 @@
+[
+  {
+    "model": "dpo-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT",
+    "prompt": "01_caste_discrimination",
+    "temperature": 0.3,
+    "completion": "\nनिश्चित रूप से, एक भेदभाव नए रूपों में एक बड़ा और बड़ा भेदभाव है। यह एक अनुभव और विशिष्ट रूप से भेदभाव निर्धारित करने के लिए आव",
+    "prompt_tokens": 96,
+    "new_tokens": 128,
+    "seconds": 4.46
+  },
+  {
+    "model": "dpo-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT",
+    "prompt": "02_polio_campaign",
+    "temperature": 0.3,
+    "completion": " यह एक भारतीय विश्वविद्यालय में एक अनुकूलित विशेषताओं के लिए एक विशेष विधियों में भी उपयोग किया जाता है। विशेषताओं का उपयोग करने वाले",
+    "prompt_tokens": 123,
+    "new_tokens": 128,
+    "seconds": 3.48
+  },
+  {
+    "model": "dpo-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT",
+    "prompt": "03_kyc_banking",
+    "temperature": 0.3,
+    "completion": " यह एक भाषा और नकद लेन-देन वाले व्यवसायों के लिए एक अर्थानुसार बैंकिंग उद्योग में उपयोग किए गए व्यवसायों के लिए अपने ग्राहक को जाने के",
+    "prompt_tokens": 120,
+    "new_tokens": 128,
+    "seconds": 3.35
+  },
+  {
+    "model": "dpo-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT",
+    "prompt": "04_sao_interview",
+    "temperature": 0.3,
+    "completion": " यह एक भाषा विषय या विश्वासाठी आधारित गुणवत्ता और विशेषताओं के बारे में जानकारी देता है। यह एक श्रृंखला होती है जो विश्वासाठी एक आक",
+    "prompt_tokens": 83,
+    "new_tokens": 128,
+    "seconds": 3.35
+  },
+  {
+    "model": "dpo-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT",
+    "prompt": "05_data_engineer_duties",
+    "temperature": 0.3,
+    "completion": " यह एक भारतीय विकास और स्वादी जीवन के बारे में एक विशेष उद्देश्य बनाता है। इसमें विभिन्न विश्वासों की तुलना में बेहतर जीवन के लिए एक अ",
+    "prompt_tokens": 66,
+    "new_tokens": 128,
+    "seconds": 3.36
+  }
+]

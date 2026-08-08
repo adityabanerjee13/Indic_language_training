@@ -1,0 +1,92 @@
+[
+  {
+    "model": "dpo-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT",
+    "prompt": "01_factual",
+    "temperature": 0.1,
+    "completion": " ने दिल्ली के बाद एक निर्मिती बनाया जिसका नाम बार्ड ने बना था। बार्ड ने दिल्ली के बाद एक निर्मिती बनाया जिसका नाम बार्ड ने बना था।",
+    "prompt_tokens": 47,
+    "new_tokens": 128,
+    "seconds": 4.73
+  },
+  {
+    "model": "dpo-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT",
+    "prompt": "01_factual",
+    "temperature": 0.35,
+    "completion": " राज्य का नाम बहुत अधिक समय तक उपयोग किया गया है जो भारत के अन्य भाषाओं के लिए एक विशेष राज्य नहीं है। इसका नाम भारत विशेष राज्य नाम �",
+    "prompt_tokens": 47,
+    "new_tokens": 128,
+    "seconds": 3.43
+  },
+  {
+    "model": "dpo-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT",
+    "prompt": "01_factual",
+    "temperature": 0.6,
+    "completion": " राज्य का उपयोग किया जाता है, जिसमें लागती और लागती का परिणाम देखील है। कुछ राज्यों ने भारत के अलावा भारत की विशेष नैतिक प्रवासों को नियु",
+    "prompt_tokens": 47,
+    "new_tokens": 128,
+    "seconds": 3.54
+  },
+  {
+    "model": "dpo-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT",
+    "prompt": "02_narrative",
+    "temperature": 0.1,
+    "completion": " एक बार जाने वाला लकड़ी बनाई गई थी। रामू रोज़ के बाद एक बार जाने वाला लकड़ी बनाई गई थी। रामू रोज़ के बाद एक बार जाने वाला लक",
+    "prompt_tokens": 159,
+    "new_tokens": 128,
+    "seconds": 3.77
+  },
+  {
+    "model": "dpo-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT",
+    "prompt": "02_narrative",
+    "temperature": 0.35,
+    "completion": " अपने राजनीतिक देश के लोगों को उसके बच्चों के बारे में बताए रहा था। उस दिन रामू रोज ने एक अपनी नागरिक और विशेष नागरिक के बीच बाहर बे�",
+    "prompt_tokens": 159,
+    "new_tokens": 128,
+    "seconds": 3.48
+  },
+  {
+    "model": "dpo-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT",
+    "prompt": "02_narrative",
+    "temperature": 0.6,
+    "completion": " रामू की चीजें देखी जा सकती हैं और अपने रामू के रचियों को अपने खेत के आपत्तियों पर बदला गया। अपने खेत के खेवने की जाने वाली पूर्ण नियु",
+    "prompt_tokens": 159,
+    "new_tokens": 128,
+    "seconds": 3.59
+  },
+  {
+    "model": "dpo-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT",
+    "prompt": "03_fewshot_translation",
+    "temperature": 0.1,
+    "completion": " यह बाद में बारी बाहर रहेगा।\n\nEnglish: The man is a good cook.\nHindi: एक बाजारी बना देता है।\n\nEnglish: The man is a good cook.\nHindi: एक बाजारी बना देता है।\n\nEnglish: The man is a good cook.\nHindi: एक बाजारी बना द",
+    "prompt_tokens": 104,
+    "new_tokens": 128,
+    "seconds": 3.93
+  },
+  {
+    "model": "dpo-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT",
+    "prompt": "03_fewshot_translation",
+    "temperature": 0.35,
+    "completion": " यह वही जुलाई के बाद बेस्कार में बात करेगा।\n\nEnglish: The man is a good cook.\nHindi: वह एक अच्छा बच्चा है।\n\nEnglish: The man is a good cook.\nHindi: वह एक अच्छा बच्चा है।\n\nEnglish: The man is a good cook.\nHindi: वह ए",
+    "prompt_tokens": 104,
+    "new_tokens": 128,
+    "seconds": 3.48
+  },
+  {
+    "model": "dpo-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT",
+    "prompt": "03_fewshot_translation",
+    "temperature": 0.6,
+    "completion": " या आज भी अकेला रही जाईल।\n\nEnglish: Let us go to the cinema.\nHindi: याव्या नेतृत्व करें।\n\nEnglish: This is the most expensive hotel in the city.\nHindi: नेहमी भावना चलातील आकार देवाना आहे.\n\nEnglish: I've been looking for a job, but I haven't seen any.\n",
+    "prompt_tokens": 104,
+    "new_tokens": 128,
+    "seconds": 7.25
+  }
+]

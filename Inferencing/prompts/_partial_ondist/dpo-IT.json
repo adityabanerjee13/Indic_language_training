@@ -1,0 +1,42 @@
+[
+  {
+    "model": "dpo-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT",
+    "prompt": "01_news_cultural",
+    "temperature": 0.3,
+    "completion": " विशेष रूप से विश्वास की गई है और शहर के रूप में विश्वास की गई है। इस विषारण के नाम भारत के राज्य के राजनीतिक विषारण के रूप में जाना जा�",
+    "prompt_tokens": 152,
+    "new_tokens": 128,
+    "seconds": 15.45
+  },
+  {
+    "model": "dpo-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT",
+    "prompt": "02_admin_stats",
+    "temperature": 0.3,
+    "completion": " गई शुरुआती जहाज से अभियान के तहत जिले की गई शुरुआती जहाज को बाहरी रखने के लिए एक विशेष गांव बनाने के लिए एक विशेष गांव बनाने के लिए एक",
+    "prompt_tokens": 141,
+    "new_tokens": 128,
+    "seconds": 11.75
+  },
+  {
+    "model": "dpo-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT",
+    "prompt": "03_explanatory",
+    "temperature": 0.3,
+    "completion": " आप अपने व्यवसाय को अपने व्यक्ति के लिए देखना चाहिए। यह समय बढ़ता है और आपको अपने व्यवसाय के लिए जानकारी देखना चाहिए। यह समय बढ़ता ह",
+    "prompt_tokens": 83,
+    "new_tokens": 128,
+    "seconds": 12.41
+  },
+  {
+    "model": "dpo-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT",
+    "prompt": "04_news_weather",
+    "temperature": 0.3,
+    "completion": ", उनके आपूर्ति निर्माण के लिए जाने वाली बारिश के निर्देशन की बातचीत की गई है। उनके लिए एक अच्छा बारिश निर्माण नहीं किया जा सकता है। उ",
+    "prompt_tokens": 110,
+    "new_tokens": 128,
+    "seconds": 11.41
+  }
+]

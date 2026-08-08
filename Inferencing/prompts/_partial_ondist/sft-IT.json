@@ -1,0 +1,42 @@
+[
+  {
+    "model": "sft-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-sft-IT",
+    "prompt": "01_news_cultural",
+    "temperature": 0.3,
+    "completion": " विभिन्न विद्यालयों ने लोक नृत्य की प्रस्तुति दी जाने वाली छात्रों को बच्चे और अन्य छात्रों के साथ बताया गया है। विभिन्न विद्यालयों ने �",
+    "prompt_tokens": 152,
+    "new_tokens": 128,
+    "seconds": 14.97
+  },
+  {
+    "model": "sft-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-sft-IT",
+    "prompt": "02_admin_stats",
+    "temperature": 0.3,
+    "completion": " शुरुआत के बाद जिला कलेक्टर ने जिले के बाद जिले के रूप में जिले के बाद जिले के रूप में जिले के बाद जिले के रूप में जिले के बाद जिले के रू",
+    "prompt_tokens": 141,
+    "new_tokens": 128,
+    "seconds": 11.46
+  },
+  {
+    "model": "sft-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-sft-IT",
+    "prompt": "03_explanatory",
+    "temperature": 0.3,
+    "completion": " आप अपने व्यवसाय को अपने व्यवसाय के लिए देखना चाहिए। यह आपको बहुत अधिक अच्छा होगा कि आप अपने व्यवसाय को अपने व्यवसाय के लिए देखना चाहि�",
+    "prompt_tokens": 83,
+    "new_tokens": 128,
+    "seconds": 12.36
+  },
+  {
+    "model": "sft-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-sft-IT",
+    "prompt": "04_news_weather",
+    "temperature": 0.3,
+    "completion": ", बीते दो दिनों से हो रही बारिश के चलते तापमान में गिरावट दर्ज की गई है। इसके अलावा बीते दो दिनों से हो रही बारिश के चलते तापमान में गिरा�",
+    "prompt_tokens": 110,
+    "new_tokens": 128,
+    "seconds": 11.45
+  }
+]

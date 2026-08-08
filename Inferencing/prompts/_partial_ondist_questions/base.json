@@ -1,0 +1,52 @@
+[
+  {
+    "model": "base",
+    "repo": "Qwen/Qwen2.5-0.5B",
+    "prompt": "01_caste_discrimination",
+    "temperature": 0.3,
+    "completion": "\nनई रूपों में मौजूद हैं जो भी आज भी समाज में बहुत बड़े रूपों में आया हैं। यह आज भी समाज में बहुत बड़े रूपों में आया हैं। यह आज भी",
+    "prompt_tokens": 96,
+    "new_tokens": 128,
+    "seconds": 5.47
+  },
+  {
+    "model": "base",
+    "repo": "Qwen/Qwen2.5-0.5B",
+    "prompt": "02_polio_campaign",
+    "temperature": 0.3,
+    "completion": " अभियान के तहत किस आयु वर्ग के बच्चों को दवा पिलाई जाती है, और इस अभियान को चलाने के लिए किन-किन टीमों की आवश्यकता होती है? अभियान के तहत कि�",
+    "prompt_tokens": 123,
+    "new_tokens": 128,
+    "seconds": 3.73
+  },
+  {
+    "model": "base",
+    "repo": "Qwen/Qwen2.5-0.5B",
+    "prompt": "03_kyc_banking",
+    "temperature": 0.3,
+    "completion": " अपने ग्राहक को जानें तो क्या होता है?\nबैंकिंग उद्योग में \"अपने ग्राहक को जानें\" सिद्धांत का क्या अर्थ है, और नकद लेन-देन वाले व्यवसायों के �",
+    "prompt_tokens": 120,
+    "new_tokens": 128,
+    "seconds": 3.58
+  },
+  {
+    "model": "base",
+    "repo": "Qwen/Qwen2.5-0.5B",
+    "prompt": "04_sao_interview",
+    "temperature": 0.3,
+    "completion": " आप इसे जानते हैं तो आपको इसे जानते हैं तो आपको इसे जानते हैं तो आपको इसे जानते हैं तो आपको इसे जानते हैं तो आपको इसे जानते हैं �",
+    "prompt_tokens": 83,
+    "new_tokens": 128,
+    "seconds": 3.59
+  },
+  {
+    "model": "base",
+    "repo": "Qwen/Qwen2.5-0.5B",
+    "prompt": "05_data_engineer_duties",
+    "temperature": 0.3,
+    "completion": " इन्हें जिम्मेदारियाँ के लिए जिम्मेदारियों के लिए जिम्मेदारियों के लिए जिम्मेदारियों के लिए जिम्मेदारियों के लिए जिम्मेदारियों के लिए �",
+    "prompt_tokens": 66,
+    "new_tokens": 128,
+    "seconds": 3.63
+  }
+]

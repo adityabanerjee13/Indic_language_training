@@ -1,0 +1,52 @@
+[
+  {
+    "model": "sft-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-sft-IT",
+    "prompt": "01_caste_discrimination",
+    "temperature": 0.3,
+    "completion": "\nनिश्चित रूप से, एक भेदभाव नए रूपों में मौजूद हैं जिनमें उनकी भावना अधिक बढ़ती है और उनकी बहुत बढ़ती भावना है। इसके बारे में अ",
+    "prompt_tokens": 96,
+    "new_tokens": 128,
+    "seconds": 4.9
+  },
+  {
+    "model": "sft-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-sft-IT",
+    "prompt": "02_polio_campaign",
+    "temperature": 0.3,
+    "completion": " आप इसका उपयोग कर सकते हैं कि आप अपने लोगों के बच्चों को दवा पिलाने के लिए किसी भी टीम बनाने के लिए जाने जाते हैं। आप अपने लोगों के बच्चों",
+    "prompt_tokens": 123,
+    "new_tokens": 128,
+    "seconds": 3.42
+  },
+  {
+    "model": "sft-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-sft-IT",
+    "prompt": "03_kyc_banking",
+    "temperature": 0.3,
+    "completion": " अपने ग्राहक को जानें उनके व्यवसायों के लिए अपने ग्राहक के लिए अपने ग्राहक को जानें उनके व्यवसायों के लिए अपने ग्राहक को जानें उनके व्यवसा�",
+    "prompt_tokens": 120,
+    "new_tokens": 128,
+    "seconds": 3.41
+  },
+  {
+    "model": "sft-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-sft-IT",
+    "prompt": "04_sao_interview",
+    "temperature": 0.3,
+    "completion": " आप एक भाषा विषय के लिए एक विशिष्ट अनुसार एक एस.ए.ओ. प्रश्न का उपयोग कर सकते हैं जो विषय के लिए अच्छा रूप से एक एस.ए.ओ. प्रश्न है। यह एक �",
+    "prompt_tokens": 83,
+    "new_tokens": 128,
+    "seconds": 3.41
+  },
+  {
+    "model": "sft-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-sft-IT",
+    "prompt": "05_data_engineer_duties",
+    "temperature": 0.3,
+    "completion": " यह एक भाषा और निर्देशन विकास के लिए डेटा इंजीनियर की दैनिक प्राथमिकता के रूप में विभिन्न विश्वासों को बदलता है। इसके लिए एक डेटा इंज",
+    "prompt_tokens": 66,
+    "new_tokens": 128,
+    "seconds": 3.36
+  }
+]

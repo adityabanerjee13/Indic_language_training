@@ -1,0 +1,92 @@
+[
+  {
+    "model": "dpo-IT_non_align",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT_non_align",
+    "prompt": "01_factual",
+    "temperature": 0.1,
+    "completion": " ने दिल्ली को बादून निर्मित करने के लिए निर्माण किया था। इसके बाद नई दिल्ली के बाद बादून निर्मित करने के लिए निर्माण किया गया था। इसके",
+    "prompt_tokens": 47,
+    "new_tokens": 128,
+    "seconds": 9.11
+  },
+  {
+    "model": "dpo-IT_non_align",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT_non_align",
+    "prompt": "01_factual",
+    "temperature": 0.35,
+    "completion": " राष्ट्रीय प्रदेश है जो नई दिल्ली और अन्य राष्ट्रों के बीच समर्थन करता है और इसका उपयोग अपने विश्वविद्यालयों को विषाक्त करने के लिए किया जा�",
+    "prompt_tokens": 47,
+    "new_tokens": 128,
+    "seconds": 6.21
+  },
+  {
+    "model": "dpo-IT_non_align",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT_non_align",
+    "prompt": "01_factual",
+    "temperature": 0.6,
+    "completion": " राज्य का उपयोग किया जाता है, जिसमें लाल राष्ट्र ने भारत के अनुभव का उपयोग किया है। विभिन्न विधानों में नई दिल्ली राष्ट्र की गोष्टि है। न",
+    "prompt_tokens": 47,
+    "new_tokens": 128,
+    "seconds": 5.74
+  },
+  {
+    "model": "dpo-IT_non_align",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT_non_align",
+    "prompt": "02_narrative",
+    "temperature": 0.1,
+    "completion": " एक विशेष व्यक्ति या विशेष व्यक्ति या विशेष व्यक्ति या विशेष व्यक्ति या विशेष व्यक्ति या विशेष व्यक्ति या विशेष व्यक्ति या विशेष",
+    "prompt_tokens": 159,
+    "new_tokens": 128,
+    "seconds": 6.3
+  },
+  {
+    "model": "dpo-IT_non_align",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT_non_align",
+    "prompt": "02_narrative",
+    "temperature": 0.35,
+    "completion": " अपने राजनीतिक दृष्टिकोण को अपने भारात्मक विषार के रूप में देखा। इस दृष्टिकोण के लिए एक अन्य राजनीतिक विषार बनाया गया था, जो अपने",
+    "prompt_tokens": 159,
+    "new_tokens": 128,
+    "seconds": 5.28
+  },
+  {
+    "model": "dpo-IT_non_align",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT_non_align",
+    "prompt": "02_narrative",
+    "temperature": 0.6,
+    "completion": " अपने राजनीतिक संसाधनों के लिए उसे पूरा करना शुरू कर दिया था। बच्चों को कहते हुए उनके लिए एक योगदानपूर्ण रहने वाले धर्मीय विविध प्राणे �",
+    "prompt_tokens": 159,
+    "new_tokens": 128,
+    "seconds": 5.35
+  },
+  {
+    "model": "dpo-IT_non_align",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT_non_align",
+    "prompt": "03_fewshot_translation",
+    "temperature": 0.1,
+    "completion": " यह वहाँ बातचीत करेगा याव्यतिरिक्त बातचीत करेगा।\n\nEnglish: The man is a good cook.\nHindi: एक बातचीत विशेषतः विश्वास याद रखता है।\n\nEnglish: The man is a good cook.\nHindi: एक बातचीत विशेष",
+    "prompt_tokens": 104,
+    "new_tokens": 128,
+    "seconds": 5.57
+  },
+  {
+    "model": "dpo-IT_non_align",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT_non_align",
+    "prompt": "03_fewshot_translation",
+    "temperature": 0.35,
+    "completion": " यह वहाँ बीच बातचीत नहीं हो सकती है।\n\nEnglish: It is a good idea to take a break after a long day of work.\nHindi: यह अपनी दूसरी शताब्दी को बढ़ावा देने वाला खतरा होना चाहिए।\n\nEnglish: I would like to thank you for your kind help",
+    "prompt_tokens": 104,
+    "new_tokens": 128,
+    "seconds": 5.48
+  },
+  {
+    "model": "dpo-IT_non_align",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT_non_align",
+    "prompt": "03_fewshot_translation",
+    "temperature": 0.6,
+    "completion": " या विरासती दिसते, वर्तमान में चार्जटिंग बढ़वा जा सकता है।\n\nEnglish: For the past ten years, the company has been operating in the same way.\nHindi: लॉस ऑपरेटिंग वाईस्टिकोपार्टेड के लिए एक सैन नियु",
+    "prompt_tokens": 104,
+    "new_tokens": 128,
+    "seconds": 5.82
+  }
+]

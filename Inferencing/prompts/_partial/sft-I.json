@@ -1,0 +1,92 @@
+[
+  {
+    "model": "sft-I",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-sft-I",
+    "prompt": "01_factual",
+    "temperature": 0.1,
+    "completion": " भारत की राजधानी नई दिल्ली है। भारत की राजधानी नई दिल्ली भारत की राजधानी नई दिल्ली है। भारत की राजधानी नई दिल्ली भारत की राजधानी नई द",
+    "prompt_tokens": 47,
+    "new_tokens": 128,
+    "seconds": 11.35
+  },
+  {
+    "model": "sft-I",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-sft-I",
+    "prompt": "01_factual",
+    "temperature": 0.35,
+    "completion": " राज्य का राजधानी है जो भारत के दौरान राजधानी है। भारत के राजधानी नई दिल्ली भारत के राजधानी नई दिल्ली है। भारत के राजधानी नई दिल्ली �",
+    "prompt_tokens": 47,
+    "new_tokens": 128,
+    "seconds": 7.91
+  },
+  {
+    "model": "sft-I",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-sft-I",
+    "prompt": "01_factual",
+    "temperature": 0.6,
+    "completion": " राज्य का उपयोग किया जाता है, जिसमें लाल राष्ट्र नेता जुलाना देखील राज्य का उपयोग किया जाता है। इस राज्य का विकास जन्म-आद्र-शिव राज्य के",
+    "prompt_tokens": 47,
+    "new_tokens": 128,
+    "seconds": 8.48
+  },
+  {
+    "model": "sft-I",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-sft-I",
+    "prompt": "02_narrative",
+    "temperature": 0.1,
+    "completion": " एक दिन बाद रामू रोज़ के खेत के बाद एक दिन बाद रामू रोज़ के खेत के बाद एक दिन बाद रामू रोज़ के खेत के बाद एक दिन बाद रामू रोज़",
+    "prompt_tokens": 159,
+    "new_tokens": 128,
+    "seconds": 7.29
+  },
+  {
+    "model": "sft-I",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-sft-I",
+    "prompt": "02_narrative",
+    "temperature": 0.35,
+    "completion": " रामू रोज़ के दिशा था। उसके बाद रामू रोज़ के दिशा में एक दिशा थी, जिसका उपयोग बड़े लकड़े के बारे में विचार करने वाले रामू रोज़",
+    "prompt_tokens": 159,
+    "new_tokens": 128,
+    "seconds": 8.24
+  },
+  {
+    "model": "sft-I",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-sft-I",
+    "prompt": "02_narrative",
+    "temperature": 0.6,
+    "completion": " रामू भी अपने देश के लोगों को जोड़ने के लिए ब्रह्मचित्र बनाना बहुत अच्छा था। उसने ब्रह्मचित्र अपने जानकारी को देखा था और उसने ब्रह्मचित",
+    "prompt_tokens": 159,
+    "new_tokens": 128,
+    "seconds": 7.42
+  },
+  {
+    "model": "sft-I",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-sft-I",
+    "prompt": "03_fewshot_translation",
+    "temperature": 0.1,
+    "completion": " यह बाद में बारील बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार",
+    "prompt_tokens": 104,
+    "new_tokens": 128,
+    "seconds": 7.47
+  },
+  {
+    "model": "sft-I",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-sft-I",
+    "prompt": "03_fewshot_translation",
+    "temperature": 0.35,
+    "completion": " यह आगे जाने वाले लोगों को बात करने के लिए बातचीत करने के लिए बातचीत करने के लिए बातचीत करने के लिए बातचीत करने के लिए बातचीत करने के लिए बात",
+    "prompt_tokens": 104,
+    "new_tokens": 128,
+    "seconds": 8.11
+  },
+  {
+    "model": "sft-I",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-sft-I",
+    "prompt": "03_fewshot_translation",
+    "temperature": 0.6,
+    "completion": " या आज भी अकेला जगह जगह जाई जाती है।\n\nEnglish: I've been trying to get to know her, but I'm not sure if I'm doing it right.\nHindi: आपकी जानकारी देखना चाहिए, लेकिन आपका कोई भी जानकारी नहीं देखना च",
+    "prompt_tokens": 104,
+    "new_tokens": 128,
+    "seconds": 8.26
+  }
+]

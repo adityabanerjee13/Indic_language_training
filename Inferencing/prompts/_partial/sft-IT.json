@@ -1,0 +1,92 @@
+[
+  {
+    "model": "sft-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-sft-IT",
+    "prompt": "01_factual",
+    "temperature": 0.1,
+    "completion": " भारत की राजधानी नई दिल्ली है। भारत की राजधानी नई दिल्ली ने भारत की राजधानी नई दिल्ली के लिए राजधानी नई दिल्ली के लिए राजधानी नई दिल्�",
+    "prompt_tokens": 47,
+    "new_tokens": 128,
+    "seconds": 11.5
+  },
+  {
+    "model": "sft-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-sft-IT",
+    "prompt": "01_factual",
+    "temperature": 0.35,
+    "completion": " राज्य का नाम भारत राज्य नाम से जाना जाता है। भारत की राजधानी नई दिल्ली भारत की राजधानी नई दिल्ली है। भारत की राजधानी नई दिल्ली है। भ",
+    "prompt_tokens": 47,
+    "new_tokens": 128,
+    "seconds": 8.08
+  },
+  {
+    "model": "sft-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-sft-IT",
+    "prompt": "01_factual",
+    "temperature": 0.6,
+    "completion": " राज्य का उपयोग किया जाता है, जिसमें लाल राष्ट्रीय पशु राज्य, देऊमा राज्य और देऊमा राज्य की राजधानी है। भारत की राजधानी ब्रिटिश राज्य के",
+    "prompt_tokens": 47,
+    "new_tokens": 128,
+    "seconds": 7.95
+  },
+  {
+    "model": "sft-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-sft-IT",
+    "prompt": "02_narrative",
+    "temperature": 0.1,
+    "completion": " एक बार जाने वाला लकड़ी का संदूक पड़ा। रामू रोज़ की तरह अपने खेत की ओर जा रहा था, तभी रास्ते के किनारे उसे एक पुराना लकड़ी का संदूक",
+    "prompt_tokens": 159,
+    "new_tokens": 128,
+    "seconds": 15.64
+  },
+  {
+    "model": "sft-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-sft-IT",
+    "prompt": "02_narrative",
+    "temperature": 0.35,
+    "completion": " रामू रोज़ के दिशा था। उसके बाद रामू रोज़ के दिशा में एक दिशा थी, जिसका उपयोग बहुत अधिक अस्पताल बना गया था। उसे दिल्ली में बाद मे�",
+    "prompt_tokens": 159,
+    "new_tokens": 128,
+    "seconds": 16.27
+  },
+  {
+    "model": "sft-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-sft-IT",
+    "prompt": "02_narrative",
+    "temperature": 0.6,
+    "completion": " रामू भी अपने देश के लोगों को जोड़ने के लिए ब्रह्मचित्र बनाया। अपनी भावनाओं का समय विभिन्न विचारों के लिए खेत के लिए जाना जाता है। जिसक",
+    "prompt_tokens": 159,
+    "new_tokens": 128,
+    "seconds": 14.28
+  },
+  {
+    "model": "sft-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-sft-IT",
+    "prompt": "03_fewshot_translation",
+    "temperature": 0.1,
+    "completion": " यह बाद में बारे में बताया जाएगा कि वह बारे में बता सकता है।\n\nEnglish: The train will arrive at 10:30.\nHindi: ट्रेन नौ 10:30 तक बजाएगी।\n\nEnglish: The train will arrive at 10:30.\nHindi: ट्रेन नौ 1",
+    "prompt_tokens": 104,
+    "new_tokens": 128,
+    "seconds": 15.14
+  },
+  {
+    "model": "sft-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-sft-IT",
+    "prompt": "03_fewshot_translation",
+    "temperature": 0.35,
+    "completion": " यह वही वर्ष में बात लेती है।\n\nEnglish: He has a degree in engineering.\nHindi: तुम्हाला एक विज्ञान चालक बना देता है।\n\nEnglish: I am going to the cinema.\nHindi: तुम्हाला एक चालक बना देता हूँ।\n\nEnglish: He",
+    "prompt_tokens": 104,
+    "new_tokens": 128,
+    "seconds": 14.29
+  },
+  {
+    "model": "sft-IT",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-sft-IT",
+    "prompt": "03_fewshot_translation",
+    "temperature": 0.6,
+    "completion": " या आगे जुड़े थे, वह बारे में भारतीय संस्थान के नेतृत्व का सामने बनाए रहे।\n\nEnglish: I can't find my keys.\nHindi: आपको आपके लिए निकाल नहीं जाने वाला चाल नहीं",
+    "prompt_tokens": 104,
+    "new_tokens": 128,
+    "seconds": 10.73
+  }
+]

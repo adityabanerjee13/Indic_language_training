@@ -1,0 +1,52 @@
+[
+  {
+    "model": "cpt-mix-1to2",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-cpt-mix-1to2",
+    "prompt": "01_caste_discrimination",
+    "temperature": 0.3,
+    "completion": "",
+    "prompt_tokens": 96,
+    "new_tokens": 1,
+    "seconds": 0.43
+  },
+  {
+    "model": "cpt-mix-1to2",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-cpt-mix-1to2",
+    "prompt": "02_polio_campaign",
+    "temperature": 0.3,
+    "completion": "",
+    "prompt_tokens": 123,
+    "new_tokens": 1,
+    "seconds": 0.09
+  },
+  {
+    "model": "cpt-mix-1to2",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-cpt-mix-1to2",
+    "prompt": "03_kyc_banking",
+    "temperature": 0.3,
+    "completion": "",
+    "prompt_tokens": 120,
+    "new_tokens": 1,
+    "seconds": 0.04
+  },
+  {
+    "model": "cpt-mix-1to2",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-cpt-mix-1to2",
+    "prompt": "04_sao_interview",
+    "temperature": 0.3,
+    "completion": " आप इसके लिए अपने अपने लोगों के लिए लिखें।",
+    "prompt_tokens": 83,
+    "new_tokens": 42,
+    "seconds": 1.59
+  },
+  {
+    "model": "cpt-mix-1to2",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-cpt-mix-1to2",
+    "prompt": "05_data_engineer_duties",
+    "temperature": 0.3,
+    "completion": "",
+    "prompt_tokens": 66,
+    "new_tokens": 1,
+    "seconds": 0.04
+  }
+]

@@ -1,0 +1,115 @@
+{
+  "metadata": {
+    "generated": "2026-08-06 17:59:48",
+    "device": "xpu",
+    "dtype": "bf16",
+    "seed": 42,
+    "max_new_tokens": 16,
+    "temperatures": [
+      0.1,
+      0.35,
+      0.6
+    ],
+    "decoding": "pure temperature sampling (do_sample=True, no top_p, no top_k)",
+    "envelope": "raw completion - no chat template applied to any model",
+    "envelope_caveat": "sft-*/dpo-* checkpoints were trained on chat-templated text; feeding them a bare prompt runs them off-distribution on purpose, so weak output here is not an instruction-following regression",
+    "models_missing": []
+  },
+  "prompts": {
+    "01_factual": "भारत की राजधानी नई दिल्ली है। भारत का राष्ट्रीय पशु",
+    "02_narrative": "सर्दियों की एक धुंधली सुबह थी। रामू रोज़ की तरह अपने खेत की ओर जा रहा था, तभी रास्ते के किनारे उसे एक पुराना लकड़ी का संदूक पड़ा हुआ दिखाई दिया। पास जाकर उसने देखा तो",
+    "03_fewshot_translation": "English: The train arrives at nine o'clock.\nHindi: ट्रेन नौ बजे आती है।\n\nEnglish: She has been teaching at this school for ten years.\nHindi: वह दस साल से इस स्कूल में पढ़ा रही है।\n\nEnglish: If it rains tomorrow, the match will be postponed.\nHindi:"
+  },
+  "results": [
+    {
+      "model": "base",
+      "repo": "Qwen/Qwen2.5-0.5B",
+      "prompt": "01_factual",
+      "temperature": 0.1,
+      "completion": " नामक राजधानी है",
+      "prompt_tokens": 47,
+      "new_tokens": 16,
+      "seconds": 1.04
+    },
+    {
+      "model": "base",
+      "repo": "Qwen/Qwen2.5-0.5B",
+      "prompt": "01_factual",
+      "temperature": 0.35,
+      "completion": " राज्य है। भारत क",
+      "prompt_tokens": 47,
+      "new_tokens": 16,
+      "seconds": 0.53
+    },
+    {
+      "model": "base",
+      "repo": "Qwen/Qwen2.5-0.5B",
+      "prompt": "01_factual",
+      "temperature": 0.6,
+      "completion": " राज्य है। भारत क",
+      "prompt_tokens": 47,
+      "new_tokens": 16,
+      "seconds": 0.47
+    },
+    {
+      "model": "base",
+      "repo": "Qwen/Qwen2.5-0.5B",
+      "prompt": "02_narrative",
+      "temperature": 0.1,
+      "completion": " रामू रोज़ की त",
+      "prompt_tokens": 159,
+      "new_tokens": 16,
+      "seconds": 0.71
+    },
+    {
+      "model": "base",
+      "repo": "Qwen/Qwen2.5-0.5B",
+      "prompt": "02_narrative",
+      "temperature": 0.35,
+      "completion": " रामू रोज़ के द",
+      "prompt_tokens": 159,
+      "new_tokens": 16,
+      "seconds": 0.48
+    },
+    {
+      "model": "base",
+      "repo": "Qwen/Qwen2.5-0.5B",
+      "prompt": "02_narrative",
+      "temperature": 0.6,
+      "completion": " रामू भी अपने द",
+      "prompt_tokens": 159,
+      "new_tokens": 16,
+      "seconds": 0.5
+    },
+    {
+      "model": "base",
+      "repo": "Qwen/Qwen2.5-0.5B",
+      "prompt": "03_fewshot_translation",
+      "temperature": 0.1,
+      "completion": " यह बाद में बेस के",
+      "prompt_tokens": 104,
+      "new_tokens": 16,
+      "seconds": 0.82
+    },
+    {
+      "model": "base",
+      "repo": "Qwen/Qwen2.5-0.5B",
+      "prompt": "03_fewshot_translation",
+      "temperature": 0.35,
+      "completion": " यह आपको बार बार",
+      "prompt_tokens": 104,
+      "new_tokens": 16,
+      "seconds": 0.51
+    },
+    {
+      "model": "base",
+      "repo": "Qwen/Qwen2.5-0.5B",
+      "prompt": "03_fewshot_translation",
+      "temperature": 0.6,
+      "completion": " यह आपको चलकर आप",
+      "prompt_tokens": 104,
+      "new_tokens": 16,
+      "seconds": 0.5
+    }
+  ]
+}

@@ -1,0 +1,226 @@
+{
+  "metadata": {
+    "generated": "2026-08-06 21:35:30",
+    "device": "xpu",
+    "dtype": "bf16",
+    "seed": 42,
+    "max_new_tokens": 128,
+    "temperatures": [
+      0.3
+    ],
+    "decoding": "pure temperature sampling (do_sample=True, no top_p, no top_k)",
+    "envelope": "raw completion - no chat template applied to any model",
+    "envelope_caveat": "sft-*/dpo-* checkpoints were trained on chat-templated text; feeding them a bare prompt runs them off-distribution on purpose, so weak output here is not an instruction-following regression",
+    "models_missing": [],
+    "prompt_dir": "prompts/ondist_questions"
+  },
+  "prompts": {
+    "01_caste_discrimination": "छुआछूत, ऊंच-नीच और जातिगत भेदभाव आज भी समाज में किन नए रूपों में मौजूद हैं? कुछ उदाहरण देकर समझाइए।",
+    "02_polio_campaign": "पल्स पोलियो अभियान के तहत किस आयु वर्ग के बच्चों को दवा पिलाई जाती है, और इस अभियान को चलाने के लिए किन-किन टीमों की आवश्यकता होती है?",
+    "03_kyc_banking": "बैंकिंग उद्योग में \"अपने ग्राहक को जानें\" सिद्धांत का क्या अर्थ है, और नकद लेन-देन वाले व्यवसायों के लिए यह क्यों महत्वपूर्ण है?",
+    "04_sao_interview": "डेटा इंजीनियर से पूछने के लिए कुछ अच्छे परिस्थिति-कृति-परिणाम (एस.ए.ओ.) प्रश्न कौन-से हैं?",
+    "05_data_engineer_duties": "एक सामान्य डेटा इंजीनियर की दैनिक प्राथमिक जिम्मेदारियाँ क्या होती हैं?"
+  },
+  "results": [
+    {
+      "model": "base",
+      "repo": "Qwen/Qwen2.5-0.5B",
+      "prompt": "01_caste_discrimination",
+      "temperature": 0.3,
+      "completion": "\nनई रूपों में मौजूद हैं जो भी आज भी समाज में बहुत बड़े रूपों में आया हैं। यह आज भी समाज में बहुत बड़े रूपों में आया हैं। यह आज भी",
+      "prompt_tokens": 96,
+      "new_tokens": 128,
+      "seconds": 5.47
+    },
+    {
+      "model": "base",
+      "repo": "Qwen/Qwen2.5-0.5B",
+      "prompt": "02_polio_campaign",
+      "temperature": 0.3,
+      "completion": " अभियान के तहत किस आयु वर्ग के बच्चों को दवा पिलाई जाती है, और इस अभियान को चलाने के लिए किन-किन टीमों की आवश्यकता होती है? अभियान के तहत कि�",
+      "prompt_tokens": 123,
+      "new_tokens": 128,
+      "seconds": 3.73
+    },
+    {
+      "model": "base",
+      "repo": "Qwen/Qwen2.5-0.5B",
+      "prompt": "03_kyc_banking",
+      "temperature": 0.3,
+      "completion": " अपने ग्राहक को जानें तो क्या होता है?\nबैंकिंग उद्योग में \"अपने ग्राहक को जानें\" सिद्धांत का क्या अर्थ है, और नकद लेन-देन वाले व्यवसायों के �",
+      "prompt_tokens": 120,
+      "new_tokens": 128,
+      "seconds": 3.58
+    },
+    {
+      "model": "base",
+      "repo": "Qwen/Qwen2.5-0.5B",
+      "prompt": "04_sao_interview",
+      "temperature": 0.3,
+      "completion": " आप इसे जानते हैं तो आपको इसे जानते हैं तो आपको इसे जानते हैं तो आपको इसे जानते हैं तो आपको इसे जानते हैं तो आपको इसे जानते हैं �",
+      "prompt_tokens": 83,
+      "new_tokens": 128,
+      "seconds": 3.59
+    },
+    {
+      "model": "base",
+      "repo": "Qwen/Qwen2.5-0.5B",
+      "prompt": "05_data_engineer_duties",
+      "temperature": 0.3,
+      "completion": " इन्हें जिम्मेदारियाँ के लिए जिम्मेदारियों के लिए जिम्मेदारियों के लिए जिम्मेदारियों के लिए जिम्मेदारियों के लिए जिम्मेदारियों के लिए �",
+      "prompt_tokens": 66,
+      "new_tokens": 128,
+      "seconds": 3.63
+    },
+    {
+      "model": "cpt-mix-1to2",
+      "repo": "adityabanerjee13/qwen2.5-0.5b-cpt-mix-1to2",
+      "prompt": "01_caste_discrimination",
+      "temperature": 0.3,
+      "completion": "",
+      "prompt_tokens": 96,
+      "new_tokens": 1,
+      "seconds": 0.43
+    },
+    {
+      "model": "cpt-mix-1to2",
+      "repo": "adityabanerjee13/qwen2.5-0.5b-cpt-mix-1to2",
+      "prompt": "02_polio_campaign",
+      "temperature": 0.3,
+      "completion": "",
+      "prompt_tokens": 123,
+      "new_tokens": 1,
+      "seconds": 0.09
+    },
+    {
+      "model": "cpt-mix-1to2",
+      "repo": "adityabanerjee13/qwen2.5-0.5b-cpt-mix-1to2",
+      "prompt": "03_kyc_banking",
+      "temperature": 0.3,
+      "completion": "",
+      "prompt_tokens": 120,
+      "new_tokens": 1,
+      "seconds": 0.04
+    },
+    {
+      "model": "cpt-mix-1to2",
+      "repo": "adityabanerjee13/qwen2.5-0.5b-cpt-mix-1to2",
+      "prompt": "04_sao_interview",
+      "temperature": 0.3,
+      "completion": " आप इसके लिए अपने अपने लोगों के लिए लिखें।",
+      "prompt_tokens": 83,
+      "new_tokens": 42,
+      "seconds": 1.59
+    },
+    {
+      "model": "cpt-mix-1to2",
+      "repo": "adityabanerjee13/qwen2.5-0.5b-cpt-mix-1to2",
+      "prompt": "05_data_engineer_duties",
+      "temperature": 0.3,
+      "completion": "",
+      "prompt_tokens": 66,
+      "new_tokens": 1,
+      "seconds": 0.04
+    },
+    {
+      "model": "sft-IT",
+      "repo": "adityabanerjee13/qwen2.5-0.5b-sft-IT",
+      "prompt": "01_caste_discrimination",
+      "temperature": 0.3,
+      "completion": "\nनिश्चित रूप से, एक भेदभाव नए रूपों में मौजूद हैं जिनमें उनकी भावना अधिक बढ़ती है और उनकी बहुत बढ़ती भावना है। इसके बारे में अ",
+      "prompt_tokens": 96,
+      "new_tokens": 128,
+      "seconds": 4.9
+    },
+    {
+      "model": "sft-IT",
+      "repo": "adityabanerjee13/qwen2.5-0.5b-sft-IT",
+      "prompt": "02_polio_campaign",
+      "temperature": 0.3,
+      "completion": " आप इसका उपयोग कर सकते हैं कि आप अपने लोगों के बच्चों को दवा पिलाने के लिए किसी भी टीम बनाने के लिए जाने जाते हैं। आप अपने लोगों के बच्चों",
+      "prompt_tokens": 123,
+      "new_tokens": 128,
+      "seconds": 3.42
+    },
+    {
+      "model": "sft-IT",
+      "repo": "adityabanerjee13/qwen2.5-0.5b-sft-IT",
+      "prompt": "03_kyc_banking",
+      "temperature": 0.3,
+      "completion": " अपने ग्राहक को जानें उनके व्यवसायों के लिए अपने ग्राहक के लिए अपने ग्राहक को जानें उनके व्यवसायों के लिए अपने ग्राहक को जानें उनके व्यवसा�",
+      "prompt_tokens": 120,
+      "new_tokens": 128,
+      "seconds": 3.41
+    },
+    {
+      "model": "sft-IT",
+      "repo": "adityabanerjee13/qwen2.5-0.5b-sft-IT",
+      "prompt": "04_sao_interview",
+      "temperature": 0.3,
+      "completion": " आप एक भाषा विषय के लिए एक विशिष्ट अनुसार एक एस.ए.ओ. प्रश्न का उपयोग कर सकते हैं जो विषय के लिए अच्छा रूप से एक एस.ए.ओ. प्रश्न है। यह एक �",
+      "prompt_tokens": 83,
+      "new_tokens": 128,
+      "seconds": 3.41
+    },
+    {
+      "model": "sft-IT",
+      "repo": "adityabanerjee13/qwen2.5-0.5b-sft-IT",
+      "prompt": "05_data_engineer_duties",
+      "temperature": 0.3,
+      "completion": " यह एक भाषा और निर्देशन विकास के लिए डेटा इंजीनियर की दैनिक प्राथमिकता के रूप में विभिन्न विश्वासों को बदलता है। इसके लिए एक डेटा इंज",
+      "prompt_tokens": 66,
+      "new_tokens": 128,
+      "seconds": 3.36
+    },
+    {
+      "model": "dpo-IT",
+      "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT",
+      "prompt": "01_caste_discrimination",
+      "temperature": 0.3,
+      "completion": "\nनिश्चित रूप से, एक भेदभाव नए रूपों में एक बड़ा और बड़ा भेदभाव है। यह एक अनुभव और विशिष्ट रूप से भेदभाव निर्धारित करने के लिए आव",
+      "prompt_tokens": 96,
+      "new_tokens": 128,
+      "seconds": 4.46
+    },
+    {
+      "model": "dpo-IT",
+      "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT",
+      "prompt": "02_polio_campaign",
+      "temperature": 0.3,
+      "completion": " यह एक भारतीय विश्वविद्यालय में एक अनुकूलित विशेषताओं के लिए एक विशेष विधियों में भी उपयोग किया जाता है। विशेषताओं का उपयोग करने वाले",
+      "prompt_tokens": 123,
+      "new_tokens": 128,
+      "seconds": 3.48
+    },
+    {
+      "model": "dpo-IT",
+      "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT",
+      "prompt": "03_kyc_banking",
+      "temperature": 0.3,
+      "completion": " यह एक भाषा और नकद लेन-देन वाले व्यवसायों के लिए एक अर्थानुसार बैंकिंग उद्योग में उपयोग किए गए व्यवसायों के लिए अपने ग्राहक को जाने के",
+      "prompt_tokens": 120,
+      "new_tokens": 128,
+      "seconds": 3.35
+    },
+    {
+      "model": "dpo-IT",
+      "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT",
+      "prompt": "04_sao_interview",
+      "temperature": 0.3,
+      "completion": " यह एक भाषा विषय या विश्वासाठी आधारित गुणवत्ता और विशेषताओं के बारे में जानकारी देता है। यह एक श्रृंखला होती है जो विश्वासाठी एक आक",
+      "prompt_tokens": 83,
+      "new_tokens": 128,
+      "seconds": 3.35
+    },
+    {
+      "model": "dpo-IT",
+      "repo": "adityabanerjee13/qwen2.5-0.5b-dpo-IT",
+      "prompt": "05_data_engineer_duties",
+      "temperature": 0.3,
+      "completion": " यह एक भारतीय विकास और स्वादी जीवन के बारे में एक विशेष उद्देश्य बनाता है। इसमें विभिन्न विश्वासों की तुलना में बेहतर जीवन के लिए एक अ",
+      "prompt_tokens": 66,
+      "new_tokens": 128,
+      "seconds": 3.36
+    }
+  ]
+}

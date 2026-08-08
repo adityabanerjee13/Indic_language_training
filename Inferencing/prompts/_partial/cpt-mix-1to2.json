@@ -1,0 +1,92 @@
+[
+  {
+    "model": "cpt-mix-1to2",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-cpt-mix-1to2",
+    "prompt": "01_factual",
+    "temperature": 0.1,
+    "completion": " ने दिल्ली के बाद बनाया था। इस बार भारत की राजधानी नई दिल्ली के बाद बनाया गया था। इस बार भारत की राजधानी नई दिल्ली के बाद बनाया गया थ",
+    "prompt_tokens": 47,
+    "new_tokens": 128,
+    "seconds": 10.94
+  },
+  {
+    "model": "cpt-mix-1to2",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-cpt-mix-1to2",
+    "prompt": "01_factual",
+    "temperature": 0.35,
+    "completion": " राज्य के राज्य था। राजधानी नई दिल्ली के राज्य तीन वर्षों के दौरान भारत का राज्य निर्माण किया गया। भारत का राज्य नई दिल्ली के राज्य ती",
+    "prompt_tokens": 47,
+    "new_tokens": 128,
+    "seconds": 8.49
+  },
+  {
+    "model": "cpt-mix-1to2",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-cpt-mix-1to2",
+    "prompt": "01_factual",
+    "temperature": 0.6,
+    "completion": " राज्य के राज्य था। राजधानी नई दिल्ली में बड़ी नगर की तलाश की बच्ची भी कहते हैं कि वे लक्षावर अपने जानकारी को देने से दिल्ली के बाद नियु",
+    "prompt_tokens": 47,
+    "new_tokens": 128,
+    "seconds": 8.79
+  },
+  {
+    "model": "cpt-mix-1to2",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-cpt-mix-1to2",
+    "prompt": "02_narrative",
+    "temperature": 0.1,
+    "completion": " रामू रोज़ की तरह अपने खेत की ओर जा रहा था। तब रामू रोज़ की तरह अपने खेत की ओर जा रहा था। तब रामू रोज़ की तरह अपने खेत की ओर जा �",
+    "prompt_tokens": 159,
+    "new_tokens": 128,
+    "seconds": 9.68
+  },
+  {
+    "model": "cpt-mix-1to2",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-cpt-mix-1to2",
+    "prompt": "02_narrative",
+    "temperature": 0.35,
+    "completion": " रामू रोज़ के दौरान बाजार में आने की तरह बस गया। उसने दो बार उसके दौरान बस गया। उसके दौरान बस गया तो उसके दौरान बस गया तो उसक",
+    "prompt_tokens": 159,
+    "new_tokens": 128,
+    "seconds": 9.25
+  },
+  {
+    "model": "cpt-mix-1to2",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-cpt-mix-1to2",
+    "prompt": "02_narrative",
+    "temperature": 0.6,
+    "completion": " रामू की चीनी को जल लेने के लिए जारी कर दिया। उसने तो जगह को रामू की चीनी को जल लेने के लिए जारी कर दिया।",
+    "prompt_tokens": 159,
+    "new_tokens": 99,
+    "seconds": 7.51
+  },
+  {
+    "model": "cpt-mix-1to2",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-cpt-mix-1to2",
+    "prompt": "03_fewshot_translation",
+    "temperature": 0.1,
+    "completion": " यह बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार बार �",
+    "prompt_tokens": 104,
+    "new_tokens": 128,
+    "seconds": 9.63
+  },
+  {
+    "model": "cpt-mix-1to2",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-cpt-mix-1to2",
+    "prompt": "03_fewshot_translation",
+    "temperature": 0.35,
+    "completion": " यह आपल्या बेटी ने बेचली है कि तो भारतीय बेटी ने बेचाया जाएगा।",
+    "prompt_tokens": 104,
+    "new_tokens": 62,
+    "seconds": 4.74
+  },
+  {
+    "model": "cpt-mix-1to2",
+    "repo": "adityabanerjee13/qwen2.5-0.5b-cpt-mix-1to2",
+    "prompt": "03_fewshot_translation",
+    "temperature": 0.6,
+    "completion": " या आज भी अकेला जगह जगह जारी करेगा।\n\nEnglish: It was a good time for the man to be alive.\nHindi: उस अभिनेता अभी तक याद नहीं लिया।",
+    "prompt_tokens": 104,
+    "new_tokens": 86,
+    "seconds": 5.97
+  }
+]
